@@ -1,55 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-body{
-  background-color: #f2f2f2;
-    }
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-.main_box {
-  background-color:  #a16be3;
-  position: relative;
-  right: 50px;
-  margin-top: 50px;
-  margin-bottom: 100px;
-  margin-right: 300px;
-  margin-left: 400px;
-  text-align: center;
-  padding-top: 50px;
-  padding-right: 70px;
-  padding-bottom: 50px;
-  padding-left: 80px;
-}
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/login.css"/>
 
-</style>
 </head>
 
-<body>
-<div class = "main_box">
-<h1>Register Page</h1>
-<form>
-  First name:<br>
-  <input type="text" name="firstname" value="">
-  <br><br>
-  Last name:<br>
-  <input type="text" name="lastname" value="">
-  <br><br>
-  E-mail:<br>
-  <input type="text" name="E-mail" value="">
-  <br><br>
-  University Id:<br>
-  <input type="text" name="Uni Id" value="">
-  <br><br>
-  Category:<br>
-  <select>
-  <option value = "Student">Student</option>
-  <option value = "Professor">Professor</option>
-  <option value = "Admin">Admin</option>
+  <body>
+    <body class="text-center">
+  <div class = "card-block">
+  <h1>Register Page</h1>
+  <form>
+    First name:<br>
+        <input type="text" id="firstName" class="form-control" placeholder="First name" required autofocus>
+    Last name:<br>
+        <input type="text" id="lastName" class="form-control" placeholder="Last name" required autofocus>
+    E-mail:<br>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+    University ID:<br>
+        <input type="text" id="universityID" class="form-control" placeholder="University ID" required autofocus>
+    Password:<br>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required autofocus>
+    Category:<br>
+  <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
+    <option selected>Choose...</option>
+    <option value="Student">Student</option>
+    <option value="Professor">Professor</option>
+    <option value="Admin">Admin</option>
   </select>
-  <br><br>
-  <input type="button" value="Cancel" style="margin-right: 200px">
-  <input type="button" value="Submit" >
-</form>
+
+    <button type="button" class="btn btn-primary">Submit</button>
+    <button type="button" class="btn btn-secondary">Cancel</button>
+
+
+  </form>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 </body>
 </html>
