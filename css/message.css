@@ -1,0 +1,18 @@
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Times New Roman";
+}
+
+.notification {
+    margin: auto;
+    width: 75%;
+    border: 2px solid grey;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.notification a{
+    font-size: 14pt;
+    font-weight: bold;
+    text-decoration: underline;
+    color: black;
+}
