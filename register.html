@@ -8,7 +8,12 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- Bootstrap core CSS -->
     <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/login.css"/>
+  <link rel="stylesheet" href="css/login.css"/> 
+  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+
 
 </head>
 
@@ -35,11 +40,56 @@
     <option value="Admin">Admin</option>
   </select>
 
-    <button type="button" class="btn btn-primary">Submit</button>
-    <button type="button" class="btn btn-secondary">Cancel</button>
+    <button type="button" id="submitButton" class="btn btn-primary" >Submit</button>
+    <button type="button" id="cancelButton" class="btn btn-secondary">Cancel</button>
 
 
   </form>
+
+<script>
+
+    var firebaseConfig = {
+      apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+      authDomain: "educationalmanagement-44760.firebaseapp.com",
+      databaseURL: "https://educationalmanagement-44760.firebaseio.com",
+      projectId: "educationalmanagement-44760",
+      storageBucket: "educationalmanagement-44760.appspot.com",
+      messagingSenderId: "357116925214",
+      appId: "1:357116925214:web:77a9f6e3199168b149650f",
+      measurementId: "G-0ZSQM3PN5L"
+    }
+
+    firebase.initializeApp(firebaseConfig);
+    var firestore = firebase.firestore();
+    const uid = document.getElementById("universityID");
+
+    const usersRef = firestore.doc("Users/uid");
+    const firstName = document.querySelector("#firstName");
+    const lastName = document.querySelector("#lastName");
+    const email = document.querySelector("#inputEmail");
+    const password = document.querySelector("#inputPassword");
+    const category = document.querySelector("#inlineFormCustomSelectPref")
+    const submitButton = document.getElementById("submitButton");
+    submitButton.addEventListener("click",function(){
+             firestore.collection("Users").doc().set({
+                 firstName: firstName.value,
+                 lastName: lastName.value,
+                 email: inputEmail.value,
+                 password: inputPassword.value,
+                 category: inlineFormCustomSelectPref.value,
+                 UniversityID: uid.value
+             }).then(function() {
+                 console.log("Document successfully written!");
+                 alert("Submitted");
+            })
+             .catch(function(error) {
+                 console.error("Error writing document: ", error);
+             });
+     })
+
+    
+
+</script>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
