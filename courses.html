@@ -99,7 +99,7 @@
         db.collection("Courses").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var showList = document.getElementById('list-group');
-                var html_add = '<li><a href="#">';
+                var html_add = '<li><a href="course_results.html#' + `${doc.id}` + '">';
                 html_add += `${doc.id}`;
                 html_add += '</a></li>';
                 showList.insertAdjacentHTML( 'afterbegin', html_add );

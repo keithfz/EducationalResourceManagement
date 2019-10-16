@@ -56,34 +56,52 @@
         <div class="col-md-8 blog-main">
 
           <div class="blog-post">
-            
-            <hr>
-            <h2 class="blog-post-title">  
-              CSI518 - Software Engineering
-            </h2>
-            <hr>
-
-            <h2 class="blog-post-title">  
-              Description
-            </h2>
-            <p>
-              Software engineering principles, the role of abstraction in programming, abstract data types, modularization and module interfaces, specifications, and teamwork. Concurrent programming models, synchronization and interprocess communication. Project work in contemporary concurrent and object-oriented languages.
-            </p>
-
-            <hr>
-            <h2 class="blog-post-title">  
-              Prerequisites
-            </h2>
-
-            <p>
-              Graduate Csi standing or permission of instructor, Csi 310.
-            </p>
+            <div id = "classResult">
+              
+              </div>
 
           </div>
         </div>
-      </div>
     </main>
+      </div>
+      
+                <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
 
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+        authDomain: "educationalmanagement-44760.firebaseapp.com",
+        projectId: "educationalmanagement-44760",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      var db = firebase.firestore();
+    
+    </script>
+      
+       <script>
+        var hashes = window.location.hash.split('#');
+        var selection = hashes[1];
+        selection = decodeURIComponent((selection + '').replace(/\+/g, '%20'));
+        var selection2 = hashes[2];
+        selection2 = decodeURIComponent((selection2 + '').replace(/\+/g, '%20'));
+           
+         var docRef = db.collection("Courses").doc(selection).collection("Subjects").doc(selection2);
+           docRef.get().then(function(doc) {
+                var code = `${doc.get("Code")}`;
+                var description = `${doc.get("Description")}`;
+                var showList = document.getElementById('classResult');
+                var html_add = '<hr><h2 class="blog-post-title">' + code + ' - ' + selection2;
+                html_add += '</h2><hr><h2 class="blog-post-title">Description</h2><p>';
+                html_add += description
+                html_add += '</p>'
+                showList.insertAdjacentHTML( 'afterbegin', html_add );
+           })
+        </script>
+      
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
