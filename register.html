@@ -1,99 +1,353 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- Bootstrap core CSS -->
-    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/login.css"/> 
-  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+     <!-- Bootstrap core CSS -->
+     <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="css/login.css" />
+   <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+   <style>
+      .apply-flex {
+         display: flex;
+      }
 
+      .card-block {
+         width: 760px;
+         margin: auto
+      }
 
+      .error {
+         color: red;
+      }
+
+      .error-dis {
+         display: none;
+      }
+
+      .form-control {
+         width: 300px;
+         display: inline;
+      }
+
+      .error-valid-email {
+         display: none;
+      }
+
+      .error-pswd {
+         display: none;
+      }
+   </style>
 </head>
 
-  <body>
-    <body class="text-center">
-  <div class = "card-block">
-  <h1>Register Page</h1>
-  <form>
-    First name:<br>
-        <input type="text" id="firstName" class="form-control" placeholder="First name" required autofocus>
-    Last name:<br>
-        <input type="text" id="lastName" class="form-control" placeholder="Last name" required autofocus>
-    E-mail:<br>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-    University ID:<br>
-        <input type="text" id="universityID" class="form-control" placeholder="University ID" required autofocus>
-    Password:<br>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required autofocus>
-    Category:<br>
-  <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
-    <option selected>Choose...</option>
-    <option value="Student">Student</option>
-    <option value="Professor">Professor</option>
-    <option value="Admin">Admin</option>
-  </select>
+<body class="text-center" onload="document.register.reset();">
+   <div class="card-block">
+      <centre>
+         <h1>Register Page</h1>
+      </centre>
+      <form name="register">
+         <table text-align="center">
+            <br>
+            <tr>
+               <td><b> First Name:</b><br></td>
+               <td>
+                  <div class="apply-flex">
+                     <input type="text" id="firstName" class="form-control" placeholder="Enter First name"
+                        name="firstName" required autofocus>
+                     <span class="error error-dis" id="error-fname">Please Enter Your First Name</span>
+                  </div>
+               </td>
+            </tr>
+            <tr>
+               <td><b> Last Name:</b><br></td>
+               <td>
+                  <div class="apply-flex">
+                     <input type="text" id="lastName" class="form-control" placeholder="Enter Last name" name="lastName"
+                        required autofocus>
+                     <span class="error error-dis" id="error-lname">Please Enter Your Last Name</span>
+                  </div>
+               </td>
+            <tr>
+               <td><b>Email:</b><br></td>
+               <td>
+                  <div class="apply-flex">
+                     <input type="email" id="email" class="form-control" placeholder="Enter Email address"
+                        name="inputEmail" required autofocus>
+                     <span class="error error-dis" id="error-email">Please Enter UAlbany Email Address</span>
+                  </div>
+               </td>
+            </tr>
+            <tr>
+               <td><b> University ID:</b><br></td>
+               <td>
+                  <div class="apply-flex">
+                     <input type="text" id="universityId" class="form-control" placeholder="Enter a valid University ID"
+                        name="universityID" maxlength="10" required autofocus>
+                     <span class="error error-dis" id="error-uniId">Please Enter valid 10 digit University Id</span>
+                  </div>
+               </td>
+            </tr>
+            <tr>
+               <td><b>Password:</b><br></td>
+               <td>
+                  <div class="apply-flex">
+                     <input type="password" id="password" class="form-control" placeholder="Enter your password"
+                        name="inputPassword" required autofocus onblur="testPassword()">
+                     <span class="error error-dis" id="error-pswd">Please Enter a Valid Password</span>
+                     <span class="error error-pswd" id="doMatchPass">Password do not match</span>
+                  </div>
+               </td>
+            </tr>
+            <tr>
+               <td><b> Confirm Password:</b><br></td>
+               <td>
+                  <div class="apply-flex">
+                     <input type="password" maxlength="10" id="confirmPassword" class="form-control"
+                        placeholder="Please re-enter your password" name="confirmPassword" required autofocus
+                        onblur="confPassword()">
+                     <span class="error error-dis" id="errPswd">Please Enter a Valid Password</span>
+                     <span class="error error-pswd" id="doMatchPass2">Password do not match</span>
+                  </div>
+               </td>
+            </tr>
+            <tr>
+               <td><b> Category:</b><br></td>
+               <td>
+                  <div class="apply-flex">
+                     <select class="form-control" id="inlineFormCustomSelectPref" name="category">
+                        <option selected>Choose...</option>
+                        <option value="Student">Student</option>
+                        <option value="Professor">Professor</option>
+                        <option value="Admin">Admin</option>
+                     </select>
+                     <span class="error error-dis" id="error-selectField">Please select a category</span>
+                  </div>
+               </td>
+            </tr>
+            <tr>
+               <td></td>
+               <td>
+                  <button type="button" id="submitButton" class="btn btn-primary" onclick="validate()">Submit</button>
+                  <button type="button" id="cancelButton" class="btn btn-secondary" onclick="resetAll()">Cancel</button>
+               </td>
+            </tr>
+         </table>
+      </form>
+   </div>
+   <script>
+      function testPassword() {
+         var pswd = document.getElementById("password");
+         var pswdValue = pswd.value;
+         var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
 
-    <button type="button" id="submitButton" class="btn btn-primary" >Submit</button>
-    <button type="button" id="cancelButton" class="btn btn-secondary">Cancel</button>
+         if (passRegex.test(pswdValue)) {
+            document.getElementById("error-pswd").classList.add('error-dis');
+         } else {
+            document.getElementById("error-pswd").classList.remove('error-dis');
+         }
+      }
+      function confPassword() {
+         var cnfpswd = document.getElementById("confirmPassword");
+         var cnfpswdValue = cnfpswd.value;
+         var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
+
+         if (passRegex.test(cnfpswdValue)) {
+            document.getElementById("errPswd").classList.add('error-dis');
+         } else {
+            document.getElementById("errPswd").classList.remove('error-dis');
+         }
+
+      }
+      function validate() {
+         var isValidationSuccess = false;
+         var firstName = document.getElementById("firstName");
+         var lastName = document.getElementById("lastName");
+         var email = document.getElementById("email");
+         var uniId = document.getElementById("universityId");
+         var pswd = document.getElementById("password");
+         var confPswd = document.getElementById("confirmPassword");
+         var selectOptions = document.getElementById('inlineFormCustomSelectPref');
+
+         var isFirstNameValid, isLastNameValid, isEmailValid, isUniIdVaild, isPasswdValid, isConfPswValid, isSelectOptionsValid, isPassMatch;
+
+         var emailRegex = /^[a-zA-Z0-9._%+-]+@albany+\.edu$/;
+         var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
+
+         if (firstName.value == "") {
+            document.getElementById("error-fname").classList.remove('error-dis');
+            isFirstNameValid = false;
+         } else {
+            document.getElementById("error-fname").classList.add('error-dis');
+            isFirstNameValid = true;
+         }
+
+         if (lastName.value == "") {
+            document.getElementById("error-lname").classList.remove('error-dis');
+            isLastNameValid = false;
+         } else {
+            document.getElementById("error-lname").classList.add('error-dis');
+            isLastNameValid = true;
+         }
+
+         if (email.value == "" || emailRegex.test(email.value) == false) {
+            document.getElementById("error-email").classList.remove('error-dis');
+            isEmailValid = false;
+         } else {
+            document.getElementById("error-email").classList.add('error-dis');
+            isEmailValid = true;
+         }
+
+         if (uniId.value == "" || isNaN(uniId.value)) {
+            document.getElementById("error-uniId").classList.remove('error-dis');
+            isUniIdVaild = false;
+         } else {
+            document.getElementById("error-uniId").classList.add('error-dis');
+            isUniIdVaild = true;
+         }
+
+         if (pswd.value == "") {
+            document.getElementById("error-pswd").classList.remove('error-dis');
+            isPasswdValid = false;
+         } else {
+            document.getElementById("error-pswd").classList.add('error-dis');
+            isPasswdValid = true;
+         }
+         if (pswd.value !== '' && confPswd.value !== '') {
+            if (pswd.value !== confPswd.value) {
+               document.getElementById('doMatchPass').classList.remove("error-pswd");
+               document.getElementById('doMatchPass2').classList.remove("error-pswd");
+               isPassMatch = false;
+            } else {
+               document.getElementById('doMatchPass').classList.add("error-pswd");
+               document.getElementById('doMatchPass2').classList.add("error-pswd");
+               isPassMatch = true;
+            }
+         }
 
 
-  </form>
+         if (selectOptions.options[selectOptions.selectedIndex].value == 'Choose...') {
+            document.getElementById("error-selectField").classList.remove('error-dis');
+            isSelectOptionsValid = false;
+         } else {
+            document.getElementById("error-selectField").classList.add('error-dis');
+            isSelectOptionsValid = true
+         }
 
-<script>
+         if (isFirstNameValid && isLastNameValid && isEmailValid && isUniIdVaild && isPasswdValid && isSelectOptionsValid && isPassMatch) {
+            isValidationSuccess = true;
+         }
 
-    var firebaseConfig = {
-      apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
-      authDomain: "educationalmanagement-44760.firebaseapp.com",
-      databaseURL: "https://educationalmanagement-44760.firebaseio.com",
-      projectId: "educationalmanagement-44760",
-      storageBucket: "educationalmanagement-44760.appspot.com",
-      messagingSenderId: "357116925214",
-      appId: "1:357116925214:web:77a9f6e3199168b149650f",
-      measurementId: "G-0ZSQM3PN5L"
-    }
+         if (isValidationSuccess) {
+            saveToDB(firstName.value, lastName.value, email.value, pswd.value, selectOptions.value, uniId.value);
+         }
 
-    firebase.initializeApp(firebaseConfig);
-    var firestore = firebase.firestore();
-    const uid = document.getElementById("universityID");
+      }
 
-    const usersRef = firestore.doc("Users/uid");
-    const firstName = document.querySelector("#firstName");
-    const lastName = document.querySelector("#lastName");
-    const email = document.querySelector("#inputEmail");
-    const password = document.querySelector("#inputPassword");
-    const category = document.querySelector("#inlineFormCustomSelectPref")
-    const submitButton = document.getElementById("submitButton");
-    submitButton.addEventListener("click",function(){
-             firestore.collection("Users").doc().set({
-                 firstName: firstName.value,
-                 lastName: lastName.value,
-                 email: inputEmail.value,
-                 password: inputPassword.value,
-                 category: inlineFormCustomSelectPref.value,
-                 UniversityID: uid.value
-             }).then(function() {
-                 console.log("Document successfully written!");
-                 alert("Submitted");
-            })
-             .catch(function(error) {
-                 console.error("Error writing document: ", error);
-             });
-     })
+      function saveToDB(fname, lname, emailValue, pswdValue, categoryValue, uniIdValue) {
 
-    
 
-</script>
+         var firebaseConfig = {
+            apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+            authDomain: "educationalmanagement-44760.firebaseapp.com",
+            databaseURL: "https://educationalmanagement-44760.firebaseio.com",
+            projectId: "educationalmanagement-44760",
+            storageBucket: "educationalmanagement-44760.appspot.com",
+            messagingSenderId: "357116925214",
+            appId: "1:357116925214:web:77a9f6e3199168b149650f",
+            measurementId: "G-0ZSQM3PN5L"
+         }
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
+         firebase.initializeApp(firebaseConfig);
+         var firestore = firebase.firestore();
+         var uid = uniIdValue;
+         var usersRef = firestore.doc("Users/uid");
+         var firstName = fname;
+         var lastName = lname;
+         var email = emailValue;
+         var password = pswdValue;
+         var category = categoryValue;
+         var submitButton = document.getElementById("submitButton");
+         var foundRecord = [];
+
+         //Retrieve all the data from Users collection
+
+         var docRef = firestore.collection("Users").get().then((snapshot) => {
+            var records = snapshot.docs;
+            records.forEach(function (record) {
+               var x = record.data();
+
+               if (x.UniversityID == uid || x.email == email) {
+                  foundRecord.push(x);
+               }
+            });
+
+            if (foundRecord.length > 0) {
+               alert('User already registered ');
+               resetAll();
+
+            } else {
+               // Save to DB
+               firestore.collection("Users").doc().set({
+                  firstName: firstName,
+                  lastName: lastName,
+                  email: email,
+                  password: password,
+                  category: category,
+                  UniversityID: uid
+               }).then(function () {
+                  console.log("Document successfully written!");
+                  // document.getElementById("reg-success").classList.remove("error-dis");
+                  resetAll();
+                  window.location.href = './success.html';
+               })
+                  .catch(function (error) {
+                     console.error("Error writing document: ", error);
+                  });
+            }
+
+         })
+            .catch((err) => {
+               console.log('Error getting documents', err);
+            });
+
+      }
+
+      function resetAll() {
+         document.getElementById("firstName").value = "";
+         document.getElementById("lastName").value = "";
+         document.getElementById("email").value = "";
+         document.getElementById("universityId").value = "";
+         document.getElementById("password").value = "";
+         document.getElementById("confirmPassword").value = "";
+         document.getElementById('inlineFormCustomSelectPref').value = "Choose...";
+         document.getElementById("error-fname").classList.add('error-dis');
+         document.getElementById("error-lname").classList.add('error-dis');
+         document.getElementById("error-email").classList.add('error-dis');
+         document.getElementById("error-uniId").classList.add('error-dis');
+         document.getElementById("error-pswd").classList.add('error-dis');
+         document.getElementById('errPswd').classList.add("error-pswd");
+         document.getElementById("error-selectField").classList.add('error-dis');
+
+      }
+   </script>
+   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"></script>
 </body>
+
 </html>
