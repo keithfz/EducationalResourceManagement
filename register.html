@@ -7,7 +7,6 @@
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- Bootstrap core CSS -->
-    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/login.css"/> 
   <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
@@ -32,14 +31,8 @@
         <input type="text" id="universityID" class="form-control" placeholder="University ID" required autofocus>
     Password:<br>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" required autofocus>
-    Category:<br>
-  <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
-    <option selected>Choose...</option>
-    <option value="Student">Student</option>
-    <option value="Professor">Professor</option>
-    <option value="Admin">Admin</option>
-  </select>
-
+    Confirm Password:<br>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required autofocus> <br>
     <button type="button" id="submitButton" class="btn btn-primary" >Submit</button>
     <button type="button" id="cancelButton" class="btn btn-secondary">Cancel</button>
 
@@ -66,25 +59,22 @@
     const usersRef = firestore.doc("Users/uid");
     const firstName = document.querySelector("#firstName");
     const lastName = document.querySelector("#lastName");
-    const email = document.querySelector("#inputEmail");
-    const password = document.querySelector("#inputPassword");
+ 
+
     const category = document.querySelector("#inlineFormCustomSelectPref")
     const submitButton = document.getElementById("submitButton");
     submitButton.addEventListener("click",function(){
-             firestore.collection("Users").doc().set({
-                 firstName: firstName.value,
-                 lastName: lastName.value,
-                 email: inputEmail.value,
-                 password: inputPassword.value,
-                 category: inlineFormCustomSelectPref.value,
-                 UniversityID: uid.value
-             }).then(function() {
-                 console.log("Document successfully written!");
-                 alert("Submitted");
-            })
-             .catch(function(error) {
-                 console.error("Error writing document: ", error);
-             });
+
+        const email = document.getElementById("inputEmail").value;
+        const password = document.getElementById("inputPassword").value;
+        console.log(password);
+
+
+        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {  
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          });
+
      })
 
     
