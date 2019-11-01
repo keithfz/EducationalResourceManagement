@@ -7,10 +7,9 @@
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-   <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
-     <!-- Bootstrap core CSS -->
-     <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
    <link rel="stylesheet" href="css/login.css" />
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
@@ -61,7 +60,7 @@
                <td>
                   <div class="apply-flex">
                      <input type="text" id="firstName" class="form-control" placeholder="Enter First name"
-                        name="firstName" required autofocus>
+                        name="firstName"  autofocus>
                      <span class="error error-dis" id="error-fname">Please Enter Your First Name</span>
                   </div>
                </td>
@@ -71,7 +70,7 @@
                <td>
                   <div class="apply-flex">
                      <input type="text" id="lastName" class="form-control" placeholder="Enter Last name" name="lastName"
-                        required autofocus>
+                         autofocus>
                      <span class="error error-dis" id="error-lname">Please Enter Your Last Name</span>
                   </div>
                </td>
@@ -80,7 +79,7 @@
                <td>
                   <div class="apply-flex">
                      <input type="email" id="email" class="form-control" placeholder="Enter Email address"
-                        name="inputEmail" required autofocus>
+                        name="inputEmail"  autofocus>
                      <span class="error error-dis" id="error-email">Please Enter UAlbany Email Address</span>
                   </div>
                </td>
@@ -90,19 +89,22 @@
                <td>
                   <div class="apply-flex">
                      <input type="text" id="universityId" class="form-control" placeholder="Enter a valid University ID"
-                        name="universityID" maxlength="10" required autofocus>
+                        name="universityID" maxlength="10"  autofocus > 
                      <span class="error error-dis" id="error-uniId">Please Enter valid 10 digit University Id</span>
                   </div>
                </td>
             </tr>
             <tr>
                <td><b>Password:</b><br></td>
-               <td>
+               <td> 
                   <div class="apply-flex">
                      <input type="password" id="password" class="form-control" placeholder="Enter your password"
-                        name="inputPassword" required autofocus onblur="testPassword()">
+                        name="inputPassword"  autofocus onblur="testPassword()"  />
                      <span class="error error-dis" id="error-pswd">Please Enter a Valid Password</span>
                      <span class="error error-pswd" id="doMatchPass">Password do not match</span>
+                     <span>
+                        <a href="#" data-toggle="tooltip" title="Password should contain atleast 1 [A-Z],one digit and length must be greater than 6">?</a>
+                     </span>
                   </div>
                </td>
             </tr>
@@ -111,7 +113,7 @@
                <td>
                   <div class="apply-flex">
                      <input type="password" maxlength="10" id="confirmPassword" class="form-control"
-                        placeholder="Please re-enter your password" name="confirmPassword" required autofocus
+                        placeholder="Please re-enter your password" name="confirmPassword"  autofocus
                         onblur="confPassword()">
                      <span class="error error-dis" id="errPswd">Please Enter a Valid Password</span>
                      <span class="error error-pswd" id="doMatchPass2">Password do not match</span>
@@ -143,10 +145,15 @@
       </form>
    </div>
    <script>
+
+      $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();   
+      });
+      var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
+
       function testPassword() {
          var pswd = document.getElementById("password");
          var pswdValue = pswd.value;
-         var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
 
          if (passRegex.test(pswdValue)) {
             document.getElementById("error-pswd").classList.add('error-dis');
@@ -213,7 +220,7 @@
             isUniIdVaild = true;
          }
 
-         if (pswd.value == "") {
+         if (pswd.value == "" || !passRegex.test(pswd.value)) {
             document.getElementById("error-pswd").classList.remove('error-dis');
             isPasswdValid = false;
          } else {
@@ -241,12 +248,22 @@
             isSelectOptionsValid = true
          }
 
+         console.log('first name', firstName.value);         
+         console.log('last name', lastName.value);
+         console.log('email', email.value);
+         console.log('udi', uniId.value); 
+         console.log('paswd', pswd.value);
+         console.log('conf pswd',confPswd.value);
+
+
          if (isFirstNameValid && isLastNameValid && isEmailValid && isUniIdVaild && isPasswdValid && isSelectOptionsValid && isPassMatch) {
             isValidationSuccess = true;
          }
 
          if (isValidationSuccess) {
             saveToDB(firstName.value, lastName.value, email.value, pswd.value, selectOptions.value, uniId.value);
+         } else {
+            return;
          }
 
       }
