@@ -11,15 +11,17 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     
     <!-- Bootstrap core CSS -->
-    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="css/login.css"/>
+	<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
 </head>
 
 <body>
   <body class="text-center">
   	<div class="card card-block">
 
-	    <form class="form-block">
 	      <h1 class="h3 mb-3 font-weight-normal">Educational Resource Management</h1>
 	      <label for="inputEmail" class="sr-only">Email address</label>
 	      <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
@@ -33,15 +35,58 @@
 				<a href="register.html"> Register </a>
 			</div>
 
-	    </form>
 	</div>
 
 
 <script language="javascript">
-	function validate(form)
+
+    var firebaseConfig = {
+      apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+      authDomain: "educationalmanagement-44760.firebaseapp.com",
+      databaseURL: "https://educationalmanagement-44760.firebaseio.com",
+      projectId: "educationalmanagement-44760",
+      storageBucket: "educationalmanagement-44760.appspot.com",
+      messagingSenderId: "357116925214",
+      appId: "1:357116925214:web:77a9f6e3199168b149650f",
+      measurementId: "G-0ZSQM3PN5L"
+    }
+
+    firebase.initializeApp(firebaseConfig);
+    var firestore = firebase.firestore();
+
+    var user = firebase.auth().currentUser;
+    console.log(user)
+
+	function validate()
 	{
-		// Do something with password
- 	}
+		firebase.auth().signOut().then(function() {
+			  // Sign-out successful.
+			}).catch(function(error) {
+			  // An error happened.
+			});
+		console.log("validating");
+ 		const email = document.getElementById("inputEmail").value;
+ 		const password = document.getElementById("inputPassword").value;
+
+ 		console.log(email);
+ 		console.log(password);
+
+		firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
+			console.log("function")
+			if (user){
+    			console.log("success");
+    			window.location.replace("blog.html");
+
+    		} else{
+    			console.log("failure")
+    		}
+		}).catch(function(error) {
+				console.log("error");
+				var errorCode = error.code;
+				var errorMessage = error.message;
+			});
+		return false;
+	}
 
 </script>
 
