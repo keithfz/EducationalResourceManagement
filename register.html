@@ -272,6 +272,7 @@
          var usersRef = firestore.doc("Users/uid");
          var firstName = fname;
          var lastName = lname;
+         var fullName = firstName.concat(' ', lastName);
          var email = emailValue;
          var password = pswdValue;
          var category = categoryValue;
@@ -279,10 +280,21 @@
          var foundRecord = [];
 
 
-         firebase.auth().createUserWithEmailAndPassword(emailValue, pswdValue).catch(function(error) {
+         // We should use this instead of storing the informatin in a NoSQL database
+         firebase.auth().createUserWithEmailAndPassword(emailValue, pswdValue).then(
+            (user)=>{
+               if(user){
+                  user.updateProfile({
+                     displayName: fullName
+                  })
+               }
+            }
+
+         ).catch(function(error) {
            var errorCode = error.code;
            var errorMessage = error.message;
          });
+
 
          //Retrieve all the data from Users collection
 
