@@ -90,7 +90,7 @@
                   <div class="apply-flex">
                      <input type="text" id="universityId" class="form-control" placeholder="Enter a valid University ID"
                         name="universityID" maxlength="9"  autofocus > 
-                     <span class="error error-dis" id="error-uniId">Please Enter valid 10 digit University Id</span>
+                     <span class="error error-dis" id="error-uniId">Please Enter valid 9 digit University Id</span>
                   </div>
                </td>
             </tr>
@@ -212,7 +212,7 @@
             isEmailValid = true;
          }
 
-         if (uniId.value == "" || isNaN(uniId.value) || (uniId.value.length)!=10)  {
+         if (uniId.value == "" || isNaN(uniId.value) || (uniId.value.length)!=9)  {
             document.getElementById("error-uniId").classList.remove('error-dis');
             isUniIdVaild = false;
          } else {
