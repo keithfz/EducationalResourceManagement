@@ -46,6 +46,11 @@
             <form class="form-inline my-2 my-lg-0">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-primary" type="submit">Search</button>
+              <ul class="navbar-nav ml-auto">
+                  <li class="nav-item">
+                   <a class="nav-link" href="javascript:handleLogging()"><span id="logging"></span></a>
+                </li>
+              </ul>
             </form>
           </div>
         </nav>
@@ -68,6 +73,7 @@
                 <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
 
     <script>
       // Your web app's Firebase configuration
@@ -79,6 +85,44 @@
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       var db = firebase.firestore();
+
+      // Setup User login state
+    firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          document.getElementById('logging').innerHTML = "Log out";
+        }
+        else{
+          document.getElementById('logging').innerHTML = "Log in";
+        }
+      });
+    
+    var signedIn = localStorage.getItem('ermSignInState');
+    if (signedIn == '1'){
+      document.getElementById('logging').innerHTML = "Log out";
+    }
+    else{
+      document.getElementById('logging').innerHTML = "Log in";
+    }
+
+    function handleLogging(){
+      console.log("handle logging");
+      var currentState = document.getElementById('logging').innerHTML;
+      if (currentState == "Log in"){
+        window.location = ("login.html");
+      }
+      else if (currentState == "Log out"){
+        document.getElementById('logging').innerHTML = "Log in";
+        firebase.auth().signOut().then(function() {
+          localStorage.setItem('ermSignInState', '0');
+          console.log("Logged out");  
+        }).catch(function(error) {
+          console.log("Unable to log out");
+        });
+      }
+      else{
+        console.log("Error");
+      }
+    }
     
     </script>
       

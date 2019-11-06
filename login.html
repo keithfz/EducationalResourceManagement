@@ -73,13 +73,16 @@
 
 		firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
 			console.log("function")
-			if (user){
-    			console.log("success");
-    			window.location.replace("blog.html");
+				firebase.auth().onAuthStateChanged(function(user) {
+				if (user){
+	    			console.log("success");
+	    			localStorage.setItem('ermSignInState', '1');
+	    			window.location = ("blog.html");
 
-    		} else{
-    			console.log("failure")
-    		}
+	    		} else{
+	    			console.log("failure");
+	    		}
+	    	})
 		}).catch(function(error) {
 				console.log("error");
 				var errorCode = error.code;
