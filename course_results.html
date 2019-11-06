@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <style>
+      .autocomplete-active{
+        background-color: antiquewhite;
+        color: #ffffff;
+      }
+    </style>
 
     <title>Educational Resource Management</title>
 
@@ -65,7 +71,7 @@
                 Search for Courses
               </h2>
               
-                <form class="form-inline my-2 my-lg-0">
+                <form class="autocomplete">
                   <input class="form-control mr-sm-2" type="text" id="myInput" placeholder="Search">
                 </form>
             </div>
@@ -143,6 +149,7 @@
       
        <script>
         var selection = window.location.hash.substring(1)
+        var courses_code=[],courses_list=[];
         selection = decodeURIComponent((selection + '').replace(/\+/g, '%20'));
            
          db.collection("Courses").doc(selection).collection("Subjects").get().then((querySnapshot) => {
@@ -158,8 +165,107 @@
                 html_add += description
                 html_add += '</p></li>'
                 showList.insertAdjacentHTML( 'afterbegin', html_add );
+                courses_code.push(`${code}`);
+                courses_list.push(`${doc.id}`);
             });
+            console.log(courses_list)
+            console.log(courses_code)
          });
+        </script>
+        <!-- autocomplete  -->
+        <script>
+          function autocomplete(inp, arr, arr1=[]) {
+            var curidx;
+            inp.addEventListener("input", function(e) {
+            var a, b, i, val = this.value;
+            closeAllLists();
+            if (!val) { return false;}
+            curidx = -1;
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            this.parentNode.appendChild(a);
+            var max_hints=0;
+            for (i = 0; i < arr.length; i++) {
+              if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase() && max_hints<6) {
+                b = document.createElement("DIV");
+                b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                b.innerHTML += arr[i].substr(val.length);
+                // console.log(arr[i].substr(val.length))
+                b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                b.addEventListener("click", function(e) {
+                inp.value = this.getElementsByTagName("input")[0].value;
+                // Console.log(inp.value);
+                closeAllLists();
+          });
+          a.appendChild(b);
+          max_hints+=1;
+        }
+      }
+      max_hints=0;
+      for (i = 0; i < arr1.length; i++) {
+              if (arr1[i].substr(0, val.length).toUpperCase() == val.toUpperCase() && max_hints<6) {
+                b = document.createElement("DIV");
+                b.innerHTML = "<strong>" + arr1[i].substr(0, val.length) + "</strong>";
+                b.innerHTML += arr1[i].substr(val.length);
+                // console.log(arr[i].substr(val.length))
+                b.innerHTML += "<input type='hidden' value='" + arr1[i] + "'>";
+                b.addEventListener("click", function(e) {
+                inp.value = this.getElementsByTagName("input")[0].value;
+                // Console.log(inp.value);
+                closeAllLists();
+          });
+          a.appendChild(b);
+          max_hints+=1;
+        }
+      }
+  });
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        //down key
+        curidx++;
+        addActive(x);
+      } else if (e.keyCode == 38) { //up key
+        curidx--;
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        //enter key
+        e.preventDefault();
+        if (curidx > -1) {
+          // click event
+          if (x) x[curidx].click();
+        }
+      }
+  });
+  function addActive(x) {
+    if (!x) return false;
+    removeActive(x);
+    if (curidx >= x.length) curidx = 0;
+    if (curidx < 0) curidx = (x.length - 1);
+    x[curidx].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(node) {
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (node != x[i] && node != inp) {
+      x[i].parentNode.removeChild(x[i]);
+    }
+  }
+}
+document.addEventListener("click", function (e) {
+    closeAllLists(e.target);
+});
+}
+        </script>
+        <script>
+          autocomplete(document.getElementById("myInput"),courses_code,courses_list);
         </script>
       
            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
