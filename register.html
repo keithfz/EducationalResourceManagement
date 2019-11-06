@@ -282,8 +282,10 @@
             measurementId: "G-0ZSQM3PN5L"
          }
 
+         if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+         }
 
-         firebase.initializeApp(firebaseConfig);
          var firestore = firebase.firestore();
          var uid = uniIdValue;
          var usersRef = firestore.doc("Users/uid");
