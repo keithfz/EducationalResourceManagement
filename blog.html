@@ -89,9 +89,12 @@
               Odio sonet pri te, ne laudem inimicus sea. Intellegat sententiae ullamcorper eam et, eu nam tamquam debitis. Cum elit errem in, cu nibh augue voluptatibus vel, id pro diceret pericula. His eu laboramus definitionem. Reque iudicabit consequuntur id quo, quo cu prompta sadipscing vituperatoribus.
             </p>
           </div>
-
-          <img src="img/upvote.png" alt="upvote" height="40" width="42">
-          <img src="img/downvote.jpeg" alt="downvote" height="40" width="42">
+          <p1>
+          <button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button>
+          <p2 id="upvote">0</p2>
+          <button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button>
+          <p3 id="downvote">0</p3>
+          </p1>
           <br>
           <a class="btn btn-outline-primary" href="#">Older</a>
           <a class="btn btn-outline-secondary disabled" href="#">Newer</a>
@@ -195,7 +198,24 @@
     }
       
     </script>
-
+    <!-- button function -->
+    <script>
+      var upvote=0,downvote=0,voted=false;
+      function upvote_count(){
+        if(!voted){
+          upvote+=1;
+          document.getElementById("upvote").innerText=upvote;
+          voted=true
+          }
+      }
+      function downvote_count(){
+        if(!voted){
+        downvote+=1;
+        document.getElementById("downvote").innerText=downvote;
+        voted=true
+        }
+      }
+    </script>
 
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
