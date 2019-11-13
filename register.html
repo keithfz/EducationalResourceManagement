@@ -212,7 +212,7 @@
             isEmailValid = true;
          }
 
-         if (uniId.value == "" || isNaN(uniId.value) || (uniId.value.length)!=9)  {
+         if (uniId.value == "" || !(/^\d{9}$/.test(uniId.value))) {
             document.getElementById("error-uniId").classList.remove('error-dis');
             isUniIdVaild = false;
          } else {

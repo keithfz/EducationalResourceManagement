@@ -2,100 +2,145 @@
 
 <head>
 	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
 	<title>
 		Educational Resource Management - Login
 	</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
-    <!-- Bootstrap core CSS -->
-	<link rel="stylesheet" href="css/login.css"/>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="css/login.css" />
 	<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
 </head>
 
 <body>
-  <body class="text-center">
-  	<div class="card card-block">
 
-	      <h1 class="h3 mb-3 font-weight-normal">Educational Resource Management</h1>
-	      <label for="inputEmail" class="sr-only">Email address</label>
-	      <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-	      <label for="inputPassword" class="sr-only">Password</label>
-	      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-	      <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="validate(this.form)">Sign in</button>
-			<div class="forgot_password"> 
+	<body class="text-center">
+		<div class="card card-block">
+
+			<h1 class="h3 mb-3 font-weight-normal">Educational Resource Management</h1>
+			<label for="inputEmail" class="sr-only">Email address</label>
+			<div class="apply-flex">
+				<input type="email" id="inputEmail" class="form-control" placeholder="Enter Email address"
+					name="inputEmail" autofocus>
+				<span class="error error-dis" id="error-email">Please Enter UAlbany Email Address</span>
+			</div>
+			
+			<label for="inputPassword" class="sr-only">Password</label>
+			<div class="apply-flex">
+			<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+			<span class="error error-dis" id="error-pswd">Please Enter a Valid Password</span>
+			</div>
+			<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="validate(this.form)">Sign
+				in</button>
+			<div class="forgot_password">
 				<a href="#"> Forgot Password? </a>
 			</div>
 			<div class="register">
 				<a href="register.html"> Register </a>
 			</div>
 
-	</div>
+		</div>
 
 
-<script language="javascript">
+		<script language="javascript">
 
-    var firebaseConfig = {
-      apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
-      authDomain: "educationalmanagement-44760.firebaseapp.com",
-      databaseURL: "https://educationalmanagement-44760.firebaseio.com",
-      projectId: "educationalmanagement-44760",
-      storageBucket: "educationalmanagement-44760.appspot.com",
-      messagingSenderId: "357116925214",
-      appId: "1:357116925214:web:77a9f6e3199168b149650f",
-      measurementId: "G-0ZSQM3PN5L"
-    }
+			var firebaseConfig = {
+				apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+				authDomain: "educationalmanagement-44760.firebaseapp.com",
+				databaseURL: "https://educationalmanagement-44760.firebaseio.com",
+				projectId: "educationalmanagement-44760",
+				storageBucket: "educationalmanagement-44760.appspot.com",
+				messagingSenderId: "357116925214",
+				appId: "1:357116925214:web:77a9f6e3199168b149650f",
+				measurementId: "G-0ZSQM3PN5L"
+			}
 
-    firebase.initializeApp(firebaseConfig);
-    var firestore = firebase.firestore();
+			firebase.initializeApp(firebaseConfig);
+			var firestore = firebase.firestore();
 
-    var user = firebase.auth().currentUser;
-    console.log(user)
+			var user = firebase.auth().currentUser;
+			console.log(user)
 
-	function validate()
-	{
-		firebase.auth().signOut().then(function() {
-			  // Sign-out successful.
-			}).catch(function(error) {
-			  // An error happened.
-			});
-		console.log("validating");
- 		const email = document.getElementById("inputEmail").value;
- 		const password = document.getElementById("inputPassword").value;
+			function validate() {
 
- 		console.log(email);
- 		console.log(password);
+				var email = document.getElementById("inputEmail").value;
+				var password = document.getElementById("inputPassword").value;
 
-		firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
-			console.log("function")
-				firebase.auth().onAuthStateChanged(function(user) {
-				if (user){
-	    			console.log("success");
-	    			localStorage.setItem('ermSignInState', '1');
-	    			window.location = ("blog.html");
+				var emailRegex = /^[a-zA-Z0-9._%+-]+@albany+\.edu$/;
+				var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
 
-	    		} else{
-	    			console.log("failure");
-	    		}
-	    	})
-		}).catch(function(error) {
-				console.log("error");
-				var errorCode = error.code;
-				var errorMessage = error.message;
-			});
-		return false;
-	}
+				var isEmailValid = false;
+				var isPswdValid = false;
 
-</script>
+				if (email == "" || emailRegex.test(email) == false) {
+					document.getElementById("error-email").classList.remove('error-dis');
+					isEmailValid = false;
+				} else {
+					document.getElementById("error-email").classList.add('error-dis');
+					isEmailValid = true;
+				}
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+				if (password == "" || !passRegex.test(password)) {
+					document.getElementById("error-pswd").classList.remove('error-dis');
+					isPswdValid = false;
+				} else {
+					document.getElementById("error-pswd").classList.add('error-dis');
+					isPswdValid = true;
+				}
 
-</body>
+				if (isEmailValid && isPswdValid) {
+					firebase.auth().signOut().then(function () {
+						// Sign-out successful.
+					}).catch(function (error) {
+						// An error happened.
+					});
+					console.log("validating");
+					const email = document.getElementById("inputEmail").value;
+					const password = document.getElementById("inputPassword").value;
+
+					console.log(email);
+					console.log(password);
+
+					firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
+						console.log("function")
+						firebase.auth().onAuthStateChanged(function (user) {
+							if (user) {
+								console.log("success");
+								localStorage.setItem('ermSignInState', '1');
+								window.location = ("blog.html");
+
+							} else {
+								console.log("failure");
+							}
+						})
+					}).catch(function (error) {
+						console.log("error");
+						var errorCode = error.code;
+						var errorMessage = error.message;
+					});
+					return false;
+				}
+			}
+
+		</script>
+
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+			integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+			crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+			integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+			crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+			integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+			crossorigin="anonymous"></script>
+
+	</body>
+
 </html>
