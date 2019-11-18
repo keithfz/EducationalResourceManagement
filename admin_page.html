@@ -1,0 +1,178 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Educational Resource Management</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/blog/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="css/message.css" rel="stylesheet">
+    <link href="css/navbar.css" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <header class="py-3">
+        <div class = "navbar-header">
+            <h3>University at Albany</h3>
+        </div>
+      </header>
+
+      <div class="nav-scroller py-1 mb-2">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #dab3ff">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="blog.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="courses.html">Courses</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="messagecenter.html">Message Center<span class="sr-only">(current)</span></a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-primary" type="submit">Search</button>
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item">
+                   <a class="nav-link" href="javascript:handleLogging()"><span id="logging"></span></a>
+                </li>
+              </ul>
+            </form>
+          </div>
+        </nav>
+      </div>
+
+
+    <main role="main" class="container"> 
+        <h2 class="blog-post-title">Manage Users</h2>
+        <br>
+        <table class="table" id="table-group">
+        </table>
+        <br>
+
+        <hr>
+        <h2 class="blog-post-title"> Add New User </h2>
+        <br>
+        <div id="add_user">
+          <input type="text" id="first_name" class="form-control" placeholder="First Name" required>
+          <input type="text" id="last_name" class="form-control" placeholder="Last Name" required>
+          <input type="text" id="email" class="form-control" placeholder="Email" required>
+          <input type="text" id="university_id" class="form-control" placeholder="University ID" required>
+          <br>
+          <button class="btn btn-primary btn-lg" type="submit" onclick="addUser(this.form)">
+          Add User
+        </button>
+        </div>
+
+    </main>
+
+    <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+      authDomain: "educationalmanagement-44760.firebaseapp.com",
+      databaseURL: "https://educationalmanagement-44760.firebaseio.com",
+      projectId: "educationalmanagement-44760",
+      storageBucket: "educationalmanagement-44760.appspot.com",
+      messagingSenderId: "357116925214",
+      appId: "1:357116925214:web:77a9f6e3199168b149650f",
+      measurementId: "G-0ZSQM3PN5L"
+    }
+
+    firebase.initializeApp(firebaseConfig);
+    var firestore = firebase.firestore();
+
+    //var user = firebase.auth().currentUser;
+    firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          document.getElementById('logging').innerHTML = "Log out";
+        }
+        else{
+          document.getElementById('logging').innerHTML = "Log in";
+        }
+      });
+    
+    var signedIn = localStorage.getItem('ermSignInState');
+    if (signedIn == '1'){
+      document.getElementById('logging').innerHTML = "Log out";
+    }
+    else{
+      document.getElementById('logging').innerHTML = "Log in";
+      window.location = ('blog.html');
+    }
+
+
+        firestore.collection("Users").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var showList = document.getElementById('table-group');
+                var html_add = '<tr><td><a href="course_results.html#' + `${doc.get("displayName")}` + '">';
+                html_add += `${doc.get("displayName")}`;
+                html_add += '</a></td>';
+                html_add += '<td><a href="javascript:editUser(' + `'${doc.get("displayName")}'` + ')"> Edit User </a></td>';
+                html_add += '<td><a href="javascript:deleteUser(' + `'${doc.get("displayName")}'` + ')"> Delete User </a></td></tr>';
+                showList.insertAdjacentHTML( 'afterbegin', html_add );
+            });
+        });
+
+    function handleLogging(){
+      console.log("handle logging");
+      var currentState = document.getElementById('logging').innerHTML;
+      if (currentState == "Log in"){
+        window.location = ("login.html");
+      }
+      else if (currentState == "Log out"){
+        document.getElementById('logging').innerHTML = "Log in";
+        firebase.auth().signOut().then(function() {
+          localStorage.setItem('ermSignInState', '0');
+          console.log("Logged out");  
+          window.location("blog.html");
+        }).catch(function(error) {
+          console.log("Unable to log out");
+        });
+      }
+      else{
+        console.log("Error");
+      }
+    }
+
+    function addUser(){
+        var curr_html = document.getElementById('add_user');
+        html_add = '<input type="text" id="first_name" class="form-control" placeholder="First Name" required>';
+        html_add += '<input type="text" id="last_name" class="form-control" placeholder="Last Name" required>';
+        html_add += '<input type="text" id="email" class="form-control" placeholder="Email" required>';
+        html_add += '<input type="text" id="university_id" class="form-control" placeholder="University ID" required>';
+        html_add += '<button'
+        curr_html.insertAdjacentHTML('afterbegin', html_add);
+
+    }
+
+    function deleteUser(user_name){
+      console.log(user_name);
+      confirm("Are you sure you want to delete user " + user_name);
+    }
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  </body>
+</html>
