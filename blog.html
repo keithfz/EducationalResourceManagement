@@ -63,6 +63,8 @@
       <div class="row">
         <div class="col-md-8 blog-main">
 
+          <a href=javascript:createBlogPost()> Create Blog Post </a>
+
           <div class="blog-post">
             <h2 class="blog-post-title">Blog Post Example</h2>
             <p class="blog-post-meta">September 26th, 2019 by <a href="#">Student's Name</a></p>
@@ -194,6 +196,15 @@
       }
       else{
         console.log("Error");
+      }
+    }
+
+    function createBlogPost(){
+      if (signedIn == '1'){
+        window.location = ("create_post.html")
+      }
+      else{
+        window.location = ("login.html");
       }
     }
       
