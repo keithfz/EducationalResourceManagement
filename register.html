@@ -18,29 +18,23 @@
       .apply-flex {
          display: flex;
       }
-
       .card-block {
          width: 760px;
          margin: auto
       }
-
       .error {
          color: red;
       }
-
       .error-dis {
          display: none;
       }
-
       .form-control {
          width: 300px;
          display: inline;
       }
-
       .error-valid-email {
          display: none;
       }
-
       .error-pswd {
          display: none;
       }
@@ -145,16 +139,13 @@
       </form>
    </div>
    <script>
-
       $(document).ready(function(){
       $('[data-toggle="tooltip"]').tooltip();   
       });
       var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
-
       function testPassword() {
          var pswd = document.getElementById("password");
          var pswdValue = pswd.value;
-
          if (passRegex.test(pswdValue)) {
             document.getElementById("error-pswd").classList.add('error-dis');
          } else {
@@ -165,13 +156,11 @@
          var cnfpswd = document.getElementById("confirmPassword");
          var cnfpswdValue = cnfpswd.value;
          var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
-
          if (passRegex.test(cnfpswdValue)) {
             document.getElementById("errPswd").classList.add('error-dis');
          } else {
             document.getElementById("errPswd").classList.remove('error-dis');
          }
-
       }
       function validate() {
          var isValidationSuccess = false;
@@ -182,12 +171,9 @@
          var pswd = document.getElementById("password");
          var confPswd = document.getElementById("confirmPassword");
          var selectOptions = document.getElementById('inlineFormCustomSelectPref');
-
          var isFirstNameValid, isLastNameValid, isEmailValid, isUniIdVaild, isPasswdValid, isConfPswValid, isSelectOptionsValid, isPassMatch;
-
          var emailRegex = /^[a-zA-Z0-9._%+-]+@albany+\.edu$/;
          var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
-
          if (firstName.value == "" || !(isNaN(firstName.value)) ) {
             document.getElementById("error-fname").classList.remove('error-dis');
             isFirstNameValid = false;
@@ -195,7 +181,6 @@
             document.getElementById("error-fname").classList.add('error-dis');
             isFirstNameValid = true;
          }
-
          if (lastName.value == "" || !(isNaN(lastName.value))) {
             document.getElementById("error-lname").classList.remove('error-dis');
             isLastNameValid = false;
@@ -203,7 +188,6 @@
             document.getElementById("error-lname").classList.add('error-dis');
             isLastNameValid = true;
          }
-
          if (email.value == "" || emailRegex.test(email.value) == false) {
             document.getElementById("error-email").classList.remove('error-dis');
             isEmailValid = false;
@@ -211,7 +195,6 @@
             document.getElementById("error-email").classList.add('error-dis');
             isEmailValid = true;
          }
-
          if (uniId.value == "" || !(/^\d{9}$/.test(uniId.value))) {
             document.getElementById("error-uniId").classList.remove('error-dis');
             isUniIdVaild = false;
@@ -219,7 +202,6 @@
             document.getElementById("error-uniId").classList.add('error-dis');
             isUniIdVaild = true;
          }
-
          if (pswd.value == "" || !passRegex.test(pswd.value)) {
             document.getElementById("error-pswd").classList.remove('error-dis');
             isPasswdValid = false;
@@ -238,8 +220,6 @@
                isPassMatch = true;
             }
          }
-
-
          if (selectOptions.options[selectOptions.selectedIndex].value == 'Choose...') {
             document.getElementById("error-selectField").classList.remove('error-dis');
             isSelectOptionsValid = false;
@@ -247,30 +227,22 @@
             document.getElementById("error-selectField").classList.add('error-dis');
             isSelectOptionsValid = true
          }
-
          console.log('first name', firstName.value);         
          console.log('last name', lastName.value);
          console.log('email', email.value);
          console.log('udi', uniId.value); 
          console.log('paswd', pswd.value);
          console.log('conf pswd',confPswd.value);
-
-
          if (isFirstNameValid && isLastNameValid && isEmailValid && isUniIdVaild && isPasswdValid && isSelectOptionsValid && isPassMatch) {
             isValidationSuccess = true;
          }
-
          if (isValidationSuccess) {
             saveToDB(firstName.value, lastName.value, email.value, pswd.value, selectOptions.value, uniId.value);
          } else {
             return;
          }
-
       }
-
       function saveToDB(fname, lname, emailValue, pswdValue, categoryValue, uniIdValue) {
-
-
          var firebaseConfig = {
             apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
             authDomain: "educationalmanagement-44760.firebaseapp.com",
@@ -281,11 +253,9 @@
             appId: "1:357116925214:web:77a9f6e3199168b149650f",
             measurementId: "G-0ZSQM3PN5L"
          }
-
          if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
          }
-
          var firestore = firebase.firestore();
          var uid = uniIdValue;
          var usersRef = firestore.doc("Users/uid");
@@ -297,52 +267,50 @@
          var category = categoryValue;
          var submitButton = document.getElementById("submitButton");
          var foundRecord = [];
-
-
+         var unique_id = -1;
          // We should use this instead of storing the informatin in a NoSQL database
-         firebase.auth().createUserWithEmailAndPassword(emailValue, pswdValue).then(
-            (user)=>{
+         firebase.auth().createUserWithEmailAndPassword(emailValue, pswdValue)
+         .then(function () {
+               user = firebase.auth().currentUser;
                if(user){
+                  console.log("fullname");
+                  console.log(fullName);
                   user.updateProfile({
                      displayName: fullName
-                  })
+                  });
+                  unique_id = user.uid;
+                  console.log(user);
                }
             }
-
          ).catch(function(error) {
            var errorCode = error.code;
            var errorMessage = error.message;
+           console.log('Error ', errorMessage);
          });
-
-
+         console.log("test");
          //Retrieve all the data from Users collection
-
          var docRef = firestore.collection("Users").get().then((snapshot) => {
             var records = snapshot.docs;
             records.forEach(function (record) {
                var x = record.data();
-
                if (x.UniversityID == uid || x.email == email) {
                   foundRecord.push(x);
                }
             });
-
             if (foundRecord.length > 0) {
                alert('User already registered ');
                resetAll();
-
             } else {
+               console.log("else");
                // Save to DB
                firestore.collection("Users").doc().set({
-                  firstName: firstName,
-                  lastName: lastName,
+                  displayName: fullName,
                   email: email,
-                  password: password,
                   category: category,
-                  UniversityID: uid
+                  UniversityID: uid,
+                  account_id: unique_id
                }).then(function () {
                   console.log("Document successfully written!");
-                  // document.getElementById("reg-success").classList.remove("error-dis");
                   resetAll();
                   window.location.href = './success.html';
                })
@@ -350,15 +318,13 @@
                      console.error("Error writing document: ", error);
                   });
             }
-
          })
             .catch((err) => {
                console.log('Error getting documents', err);
             });
-
       }
-
       function resetAll() {
+         console.log("Resetting all");
          document.getElementById("firstName").value = "";
          document.getElementById("lastName").value = "";
          document.getElementById("email").value = "";
@@ -373,7 +339,6 @@
          document.getElementById("error-pswd").classList.add('error-dis');
          document.getElementById('errPswd').classList.add("error-pswd");
          document.getElementById("error-selectField").classList.add('error-dis');
-
       }
    </script>
    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
