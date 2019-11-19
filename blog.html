@@ -45,6 +45,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="messagecenter.html">Message Center</a>
               </li>
+              <li class="nav-item" id="manager-users">
+                <a class="nav-link" href="admin_page.html">ManageUsers</a>
+              </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -145,6 +148,12 @@
     </main>
 
     <script language="javascript">    
+
+    if(localStorage.getItem('manageUser') === 'true') {
+      document.getElementById('manager-users').style.display = 'block';
+    } else {
+      document.getElementById('manager-users').style.display = 'none';
+    }
 
     var firebaseConfig = {
       apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
