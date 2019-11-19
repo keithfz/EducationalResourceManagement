@@ -267,26 +267,7 @@
          var category = categoryValue;
          var submitButton = document.getElementById("submitButton");
          var foundRecord = [];
-         var unique_id = -1;
-         // We should use this instead of storing the informatin in a NoSQL database
-         firebase.auth().createUserWithEmailAndPassword(emailValue, pswdValue)
-         .then(function () {
-               user = firebase.auth().currentUser;
-               if(user){
-                  console.log("fullname");
-                  console.log(fullName);
-                  user.updateProfile({
-                     displayName: fullName
-                  });
-                  unique_id = user.uid;
-                  console.log(user);
-               }
-            }
-         ).catch(function(error) {
-           var errorCode = error.code;
-           var errorMessage = error.message;
-           console.log('Error ', errorMessage);
-         });
+
          console.log("test");
          //Retrieve all the data from Users collection
          var docRef = firestore.collection("Users").get().then((snapshot) => {
@@ -296,30 +277,52 @@
                if (x.UniversityID == uid || x.email == email) {
                   foundRecord.push(x);
                }
-            });
+            })
             if (foundRecord.length > 0) {
                alert('User already registered ');
                resetAll();
-            } else {
+            } 
+            else {
                console.log("else");
-               // Save to DB
-               firestore.collection("Users").doc().set({
-                  displayName: fullName,
-                  email: email,
-                  category: category,
-                  UniversityID: uid,
-                  account_id: unique_id
-               }).then(function () {
-                  console.log("Document successfully written!");
-                  resetAll();
-                  window.location.href = './success.html';
-               })
-                  .catch(function (error) {
-                     console.error("Error writing document: ", error);
+                  // We should use this instead of storing the informatin in a NoSQL database
+                  firebase.auth().createUserWithEmailAndPassword(emailValue, pswdValue)
+                  .then(function (user, unique_id) {
+                     console.log("successfully createUserWithEmailAndPassword")
+                        user = firebase.auth().currentUser;
+                        if(user){
+                           console.log("fullname");
+                           console.log(fullName);
+                           user.updateProfile({
+                              displayName: fullName
+                           });
+                           var unique_id = user.uid;
+                           console.log(user.uid);
+
+                           // Save to DB
+                           firestore.collection("Users").doc().set({
+                              displayName: fullName,
+                              email: email,
+                              category: category,
+                              UniversityID: uid,
+                              account_id: unique_id
+                           }).then(function () {
+                              console.log("Document successfully written!");
+                              resetAll();
+                              window.location.href = './success.html';
+                           })
+                              .catch(function (error) {
+                                 console.error("Error writing document: ", error);
+                              });
+
+                        }
+                     }
+                  ).catch(function(error) {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log('Error ', errorMessage);
                   });
             }
-         })
-            .catch((err) => {
+         }).catch((err) => {
                console.log('Error getting documents', err);
             });
       }
