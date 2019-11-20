@@ -308,6 +308,7 @@
                            }).then(function () {
                               console.log("Document successfully written!");
                               resetAll();
+                              localStorage.setItem('ermSignInState', '1');
                               window.location.href = './success.html';
                            })
                               .catch(function (error) {

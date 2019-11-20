@@ -153,7 +153,7 @@
         var user = firebase.auth().currentUser;
 
         if (user != null){
-          var full_name = user.displayName;
+          var full_name = firebase.auth().currentUser.displayName;
           console.log(full_name);
           var input_header = document.getElementById("post_header").value;
           var input_body = document.getElementById("post_body").value;
