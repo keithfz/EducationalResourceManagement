@@ -72,6 +72,14 @@
         <label for="exampleFormControlTextarea3">Blog Post Tags:</label>
         <textarea class="form-control" id="post_tags" rows="1"></textarea>
         <br>
+        <label for="labelPostType">Blog Post Type:</label>
+        <br>
+        <label class="radio-inline"><input type="radio" name="post_type" checked> Blog </label>
+        <label class="radio-inline"><input type="radio" name="post_type"> Question </label>
+        <label class="radio-inline"><input type="radio" name="post_type"> Marketplace </label>
+        <br><br>
+        <input type="file" id="input" onchange="handleFiles(this.files)">
+        <br><br>
         <button class="btn btn-primary btn-lg" type="submit" onclick="submitPost(this.form)">
           Post
         </button>
@@ -146,26 +154,29 @@
 
         if (user != null){
           var full_name = user.displayName;
-          console.log("display")
           console.log(full_name);
-          console.log(user)
           var input_header = document.getElementById("post_header").value;
           var input_body = document.getElementById("post_body").value;
           var input_type = "blog";
-          //var input_tags = document.getElemebtById("post_tags").value;
+          var creation_date = firebase.firestore.Timestamp.now().toDate();
 
           // Save to DB
           firestore.collection("Posts").doc().set({
               displayName: full_name,
               header: input_header,
               body: input_body,
-              type: input_type
+              type: input_type,
+              date: creation_date
           }).then(function () {
               console.log("Document successfully written!");
               }).catch(function (error) {
                     console.error("Error writing document: ", error);
-                  });
+              });
         }
+    }
+
+    function handleFiles(file){
+
     }
 
     </script>
