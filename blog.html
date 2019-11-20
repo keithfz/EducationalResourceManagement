@@ -28,7 +28,8 @@
             <h3>University at Albany</h3>
         </div>
       </header>
-
+      </div>
+      
       <div class="nav-scroller py-1 mb-2">
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #dab3ff">
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,6 +46,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="messagecenter.html">Message Center</a>
               </li>
+              <li class="nav-item" >
+                <a class="nav-link" href="admin_page.html">ManageUsers</a>
+              </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -55,51 +59,18 @@
                 </li>
               </ul>
             </form>
+            </div>
         </nav>
-      </div>
-
+        </div>
+      
 
     <main role="main" class="container">
       <div class="row">
         <div class="col-md-8 blog-main">
 
           <a href=javascript:createBlogPost()> Create Blog Post </a>
-
-          <div class="blog-post">
-            <h2 class="blog-post-title">Blog Post Example</h2>
-            <p class="blog-post-meta">September 26th, 2019 by <a href="#">Student's Name</a></p>
-            <hr>
-            <p>
-              Lorem ipsum dolor sit amet, ludus utroque vocibus quo no, usu cu scaevola senserit torquatos, feugiat deserunt qui cu. Ne velit liber mei, probatus vituperata efficiantur ea duo, choro graece argumentum et per. Ne sit choro oratio, qui et tibique suscipiantur. Sed an ornatus ceteros. Modo viderer quaerendum sea no, ne sed modo congue accumsan. Sit prompta interpretaris ex, an vix modo ocurreret. Nibh viderer luptatum ea per.
-
-              Has cibo dissentiet ne, id dicat accusamus ius. Ex brute inimicus eam. Ei laudem recteque concludaturque mea, ea dicunt copiosae duo. Cum quem tollit munere eu, ut tation intellegam sit, pro viris graeci adipisci no. Sint nostro veritus in vel, quo viderer consetetur instructior ut. Te ius menandri intellegat, vix tollit vivendum maluisset no.
-
-              Cu quidam graeco vidisse nec, cum meis dolorum reprimique at, decore fuisset rationibus ex qui. Duo veri vidisse scriptorem ne, quas blandit est at. Id per nemore facilis tibique, dicit mucius senserit an pri, in everti habemus praesent duo. Agam noluisse id ius.
-
-              Pri id dicant sapientem voluptatum. Nec id habemus nominati assueverit, mei ut tation decore. Simul soluta id per, malis consequuntur mei an. Qui solet referrentur ea, ad wisi theophrastus suscipiantur mei, ei amet docendi comprehensam vim. Case assueverit mei ut.
-
-              Mel te volutpat torquatos quaerendum, eos tale causae bonorum no. Eam minimum incorrupte elaboraret no. Nam tollit graeco eu, quem liber aliquando his ad, no deseruisse necessitatibus his. Mei cu liber zril quaeque, hinc idque torquatos est at. Pri fabulas salutandi definitiones ei, te vel prima everti disputando.
-
-              Te sit quas sadipscing, enim malorum dolores qui et. Eu euismod dolores qui. No doming repudiandae nec, vel ad tation accumsan phaedrum, ne posse dolor nec. Usu id eros mollis platonem, eos an hinc democritum, nec eu elit nonumes alienum.
-
-              Est novum graecis te, sit te option eligendi postulant, ullum sadipscing complectitur qui ea. Ius id tamquam nonumes lucilius, augue corpora per et. Iisque admodum tincidunt eu sit. Quod melius cu sea, ut per forensibus interpretaris.
-
-              Oratio saperet volumus ad vix, mel tale reque diceret eu. Malis ridens possim an mea, et debitis inermis placerat cum. Ut eum neglegentur instructior. Ea facer dissentias pri, nec te eirmod indoctum convenire, cu eam timeam iracundia. His in simul nostro timeam, saepe omnium propriae an eam. Ad delectus temporibus mel, ex sea ludus tation partem.
-
-              Pri vidit iriure percipitur ea. Sit at paulo impetus. Elit verear voluptaria mei ne, te graece omnium iuvaret nam. Quod invidunt dignissim vel ne, vix et elitr dolorem denique.
-
-              Odio sonet pri te, ne laudem inimicus sea. Intellegat sententiae ullamcorper eam et, eu nam tamquam debitis. Cum elit errem in, cu nibh augue voluptatibus vel, id pro diceret pericula. His eu laboramus definitionem. Reque iudicabit consequuntur id quo, quo cu prompta sadipscing vituperatoribus.
-            </p>
-          </div>
-          <p1>
-          <button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button>
-          <p2 id="upvote">0</p2>
-          <button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button>
-          <p3 id="downvote">0</p3>
-          </p1>
-          <br>
-          <a class="btn btn-outline-primary" href="#">Older</a>
-          <a class="btn btn-outline-secondary disabled" href="#">Newer</a>
+            <div id="blogs">
+            </div>
         </div>
 
         <aside class="col-md-4">
@@ -145,6 +116,12 @@
     </main>
 
     <script language="javascript">    
+
+    if(localStorage.getItem('manageUser') === 'true') {
+      document.getElementById('manager-users').style.display = 'block';
+    } else {
+      document.getElementById('manager-users').style.display = 'none';
+    }
 
     var firebaseConfig = {
       apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
@@ -206,9 +183,40 @@
       else{
         window.location = ("login.html");
       }
-    }
-      
+    }   
     </script>
+      
+    <!--load posts -->
+      <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+        authDomain: "educationalmanagement-44760.firebaseapp.com",
+        projectId: "educationalmanagement-44760",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      var db = firebase.firestore();
+          
+          db.collection("Posts").orderBy('date').get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                
+                var body = `${doc.get("body")}`;
+                var date = `${doc.get("date").toDate()}`;
+                dateString = date.split(' ').slice(1, 4).join(' ');
+                var displayName = `${doc.get("displayName")}`;
+                var header = `${doc.get("header")}`;
+                
+                var showList = document.getElementById('blogs');
+                var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
+                +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+                +'<hr>'
+                +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><a class="btn btn-outline-primary" href="#">Older</a><a class="btn btn-outline-secondary disabled" href="#">Newer</a>';
+                
+                showList.insertAdjacentHTML( 'afterbegin', html_add );
+            });
+});
+      </script>
     <!-- button function -->
     <script>
       var upvote=0,downvote=0,voted=false;
@@ -233,5 +241,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-  </body>
+    </body>
 </html>

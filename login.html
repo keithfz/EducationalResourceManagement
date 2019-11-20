@@ -17,6 +17,17 @@
 	<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+		</script>
+
 </head>
 
 <body>
@@ -31,11 +42,11 @@
 					name="inputEmail" autofocus>
 				<span class="error error-dis" id="error-email">Please Enter UAlbany Email Address</span>
 			</div>
-			
+
 			<label for="inputPassword" class="sr-only">Password</label>
 			<div class="apply-flex">
-			<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-			<span class="error error-dis" id="error-pswd">Please Enter a Valid Password</span>
+				<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+				<span class="error error-dis" id="error-pswd">Please Enter a Valid Password</span>
 			</div>
 			<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="validate(this.form)">Sign in</button>
 			<div class="forgot_password">
@@ -50,24 +61,26 @@
 
 		<script language="javascript">
 
-			var firebaseConfig = {
-				apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
-				authDomain: "educationalmanagement-44760.firebaseapp.com",
-				databaseURL: "https://educationalmanagement-44760.firebaseio.com",
-				projectId: "educationalmanagement-44760",
-				storageBucket: "educationalmanagement-44760.appspot.com",
-				messagingSenderId: "357116925214",
-				appId: "1:357116925214:web:77a9f6e3199168b149650f",
-				measurementId: "G-0ZSQM3PN5L"
-			}
+			// firebase.initializeApp(firebaseConfig);
+			// var firestore = firebase.firestore();
 
-			firebase.initializeApp(firebaseConfig);
-			var firestore = firebase.firestore();
-
-			var user = firebase.auth().currentUser;
-			console.log(user)
+			// var user = firebase.auth().currentUser;
 
 			function validate() {
+				var firebaseConfig = {
+					apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+					authDomain: "educationalmanagement-44760.firebaseapp.com",
+					databaseURL: "https://educationalmanagement-44760.firebaseio.com",
+					projectId: "educationalmanagement-44760",
+					storageBucket: "educationalmanagement-44760.appspot.com",
+					messagingSenderId: "357116925214",
+					appId: "1:357116925214:web:77a9f6e3199168b149650f",
+					measurementId: "G-0ZSQM3PN5L"
+				}
+				if (!firebase.apps.length) {
+					firebase.initializeApp(firebaseConfig);
+				}
+				var firestore = firebase.firestore();
 
 				var email = document.getElementById("inputEmail").value;
 				var password = document.getElementById("inputPassword").value;
@@ -77,6 +90,7 @@
 
 				var isEmailValid = false;
 				var isPswdValid = false;
+				var foundRecord = false;
 
 				if (email == "" || emailRegex.test(email) == false) {
 					document.getElementById("error-email").classList.remove('error-dis');
@@ -95,50 +109,71 @@
 				}
 
 				if (isEmailValid && isPswdValid) {
-					firebase.auth().signOut().then(function () {
-						// Sign-out successful.
-					}).catch(function (error) {
-						// An error happened.
-					});
-					console.log("validating");
+					// firebase.auth().signOut().then(function () {
+					// 	// Sign-out successful.
+					// }).catch(function (error) {
+					// 	// An error happened.
+					// });
 					const email = document.getElementById("inputEmail").value;
 					const password = document.getElementById("inputPassword").value;
-
+					var managerUsersData = [];
+					var isAdmin = false;
 					console.log(email);
 					console.log(password);
-
-					firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
-						console.log("function")
-						firebase.auth().onAuthStateChanged(function (user) {
-							if (user) {
-								console.log("success");
-								localStorage.setItem('ermSignInState', '1');
-								window.location = ("blog.html");
-
-							} else {
-								console.log("failure");
+/* 
+					firestore.collection("Users").get().then(function (data) {
+						var records = data.docs;
+						records.forEach(function (record) {
+							var x = record.data();
+							managerUsersData.push(x);
+							if (x.email === email && x.password === password) {
+								foundRecord = true;
+								if (x.category == 'Admin') {
+									isAdmin = true;
+								}
 							}
-						})
-					}).catch(function (error) {
-						console.log("error");
-						var errorCode = error.code;
-						var errorMessage = error.message;
-					});
-					return false;
-				}
+						});
+						console.log(managerUsersData);
+						if (foundRecord) {
+							if (isAdmin) {
+								localStorage.setItem('manageUser', true);
+								localStorage.setItem('managerUserData', JSON.stringify(managerUsersData))
+							} else {
+								localStorage.setItem('manageUser', false)
+								localStorage.setItem('managerUserData', null);
+							}
+
+							localStorage.setItem('ermSignInState', '1');
+							window.location = ("blog.html");
+						}
+					}) */
+
+				};
+
+
+
+				firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
+					console.log("function")
+					firebase.auth().onAuthStateChanged(function (user) {
+						if (user) {
+							console.log("success");
+							localStorage.setItem('ermSignInState', '1');
+							window.location = "./blog.html";
+
+						} else {
+							console.log("failure");
+						}
+					})
+				}).catch(function (error) {
+					console.log("error");
+					var errorCode = error.code;
+					var errorMessage = error.message;
+				});
+				return false;
 			}
 
-		</script>
 
-		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-			integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-			crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-			integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-			crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-			integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-			crossorigin="anonymous"></script>
+		</script>
 
 	</body>
 
