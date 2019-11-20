@@ -1,0 +1,168 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Educational Resource Management</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/blog/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="css/message.css" rel="stylesheet">
+    <link href="css/navbar.css" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <header class="py-3">
+        <div class = "navbar-header">
+            <h3>University at Albany</h3>
+        </div>
+      </header>
+
+      <div class="nav-scroller py-1 mb-2">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #dab3ff">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="blog.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="courses.html">Courses</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="messagecenter.html">Message Center<span class="sr-only">(current)</span></a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-primary" type="submit">Search</button>
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item">
+                   <a class="nav-link" href="javascript:handleLogging()"><span id="logging"></span></a>
+                </li>
+              </ul>
+            </form>
+          </div>
+        </nav>
+      </div>
+
+
+    <main role="main" class="container"> 
+        <h2 class="blog-post-title">Edit User</h2>
+        <br>
+        <table class="table" id="table-group">
+        </table>
+        <br>
+
+        <button class="btn btn-primary btn-lg" type="submit" onclick="makeChanges(this.form); return false;">
+          Confirm Changes
+        </button>
+    </main>
+
+    <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+      authDomain: "educationalmanagement-44760.firebaseapp.com",
+      databaseURL: "https://educationalmanagement-44760.firebaseio.com",
+      projectId: "educationalmanagement-44760",
+      storageBucket: "educationalmanagement-44760.appspot.com",
+      messagingSenderId: "357116925214",
+      appId: "1:357116925214:web:77a9f6e3199168b149650f",
+      measurementId: "G-0ZSQM3PN5L"
+    }
+
+    firebase.initializeApp(firebaseConfig);
+    var firestore = firebase.firestore();
+
+    //var user = firebase.auth().currentUser;
+    firebase.auth().onAuthStateChanged(user => {
+        if(user) {
+          document.getElementById('logging').innerHTML = "Log out";
+        }
+        else{
+          document.getElementById('logging').innerHTML = "Log in";
+        }
+      });
+    
+    var signedIn = localStorage.getItem('ermSignInState');
+    if (signedIn == '1'){
+      document.getElementById('logging').innerHTML = "Log out";
+    }
+    else{
+      document.getElementById('logging').innerHTML = "Log in";
+      window.location = ('blog.html');
+    }
+
+    var hashes = window.location.hash.split('#');
+    var selection = hashes[1];
+    selection = decodeURIComponent((selection + '').replace(/\+/g, '%20'));
+    console.log(selection);
+
+    firestore.collection("Users").where("account_id", "==", selection)
+      .get()
+      .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+          var showList = document.getElementById('table-group');
+          var html_add = '<tr><td>' + `${doc.get("displayName")}` + '</td><td><input type="text" id="new_name" class="form-control" placeholder="Enter New Name"></td></tr>';
+          html_add += '<tr><td>' + `${doc.get("email")}` + '</td><td><input type="text" id="new_email" class="form-control" placeholder="Enter New Email"></td></tr>';
+          html_add += '<tr><td>' + `${doc.get("category")}` + '</td><td><div class="apply-flex"><select class="form-control" id="inlineFormCustomSelectPref" name="category"> <option selected>Choose...</option> <option value="Student">Student</option> <option value="Professor">Professor</option> <option value="Admin">Admin</option> </select> </div></td></tr>';
+          showList.insertAdjacentHTML( 'afterbegin', html_add )
+        });
+      })
+      .catch(function(error) {
+        console.log("Error getting document");
+      });
+
+      function makeChanges() {
+        var name = document.getElementById('new_name').value;
+        var email = document.getElementById('new_email').value;
+        var acc_type = document.getElementById('inlineFormCustomSelectPref').value;
+        var result = confirm("Are you sure you want to make changes?");
+        if (result){
+          firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+            console.log(idToken);
+            console.log(selection);
+            var data = {token: idToken, account_id: selection};
+            if (name != ""){
+              data.new_name = name;
+            }
+            if (email != ""){
+              data.new_email = email;
+            }
+            if (acc_type != "Choose..."){
+              data.new_acc_type = acc_type;
+            }
+            var res = $.post( "http://localhost:3000/admin/edit_user", 
+              data,
+              function( data ) {
+                $( ".result" ).html( data );
+            });
+          }).catch(function(error){
+              console.log("error sending token", error);
+            });
+        }
+      }
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  </body>
+</html>

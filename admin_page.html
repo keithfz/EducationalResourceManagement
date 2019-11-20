@@ -72,14 +72,26 @@
         <h2 class="blog-post-title"> Add New User </h2>
         <br>
         <div id="add_user">
-          <input type="text" id="first_name" class="form-control" placeholder="First Name" required>
-          <input type="text" id="last_name" class="form-control" placeholder="Last Name" required>
-          <input type="text" id="email" class="form-control" placeholder="Email" required>
-          <input type="text" id="university_id" class="form-control" placeholder="University ID" required>
+          <form>
+            <input type="text" id="first_name" class="form-control" placeholder="First Name" required>
+            <input type="text" id="last_name" class="form-control" placeholder="Last Name" required>
+            <input type="text" id="email" class="form-control" placeholder="Email" required>
+            <input type="text" id="university_id" class="form-control" placeholder="University ID" required>
+            <input type="password" id="temp_password" class="form-control" autocomplete="on" placeholder="Temporary Password" required>
+            <input type="password" id="confirm_password" class="form-control" autocomplete="on" placeholder="Confirm Password" required>
+            <div class="apply-flex">
+               <select class="form-control" id="inlineFormCustomSelectPref" name="category">
+                  <option selected>Choose...</option>
+                  <option value="Student">Student</option>
+                  <option value="Professor">Professor</option>
+                  <option value="Admin">Admin</option>
+                </select>
+            </div>
           <br>
-          <button class="btn btn-primary btn-lg" type="submit" onclick="addUser(this.form)">
-          Add User
-        </button>
+          <button class="btn btn-primary btn-lg" type="submit" onclick="addUser(this.form); return false;">
+            Add User
+          </button>
+        </form>
         </div>
 
     </main>
@@ -125,8 +137,9 @@
                 var html_add = '<tr><td><a href="course_results.html#' + `${doc.get("displayName")}` + '">';
                 html_add += `${doc.get("displayName")}`;
                 html_add += '</a></td>';
-                html_add += '<td><a href="javascript:editUser(' + `'${doc.get("displayName")}'` + ')"> Edit User </a></td>';
-                html_add += '<td><a href="javascript:deleteUser(' + `'${doc.get("displayName")}'` + ')"> Delete User </a></td></tr>';
+                html_add += '<td><a href="javascript:editUser(' + `'${doc.get("account_id")}'` + ')"> Edit User </a></td>';
+                console.log(doc.get("account_id"));
+                html_add += '<td><a href="javascript:deleteUser(' + `'${doc.get("displayName")}'` + ',' + `'${doc.get("account_id")}'` + ')"> Delete User </a></td></tr>';
                 showList.insertAdjacentHTML( 'afterbegin', html_add );
             });
         });
@@ -153,24 +166,60 @@
     }
 
     function addUser(){
-        var curr_html = document.getElementById('add_user');
-        html_add = '<input type="text" id="first_name" class="form-control" placeholder="First Name" required>';
-        html_add += '<input type="text" id="last_name" class="form-control" placeholder="Last Name" required>';
-        html_add += '<input type="text" id="email" class="form-control" placeholder="Email" required>';
-        html_add += '<input type="text" id="university_id" class="form-control" placeholder="University ID" required>';
-        html_add += '<button'
-        curr_html.insertAdjacentHTML('afterbegin', html_add);
-
+        console.log("in add user");
+        var first_name = document.getElementById('first_name').value;
+        var last_name = document.getElementById('last_name').value;
+        var email = document.getElementById('email').value;
+        var university_id = document.getElementById('university_id').value;
+        var temp_password = document.getElementById('temp_password').value;
+        var confirm_password = document.getElementById('confirm_password').value;
+        var full_name = first_name + " " + last_name;
+        var acc_type = document.getElementById('inlineFormCustomSelectPref').value;
+        if (first_name == "" || last_name == "" || email == "" || university_id == "" || temp_password == "" || acc_type == undefined || temp_password !== confirm_password){
+          return
+        }
+        else{
+          console.log(full_name);
+          var result = confirm("Are you sure you want to add user " + full_name);
+          if (result){
+            console.log("Adding user");
+            firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+              var res = $.post( "http://localhost:3000/admin/add_user", 
+                {token: idToken, displayName: full_name, email: email, university_id:university_id, password: temp_password, acc_type: acc_type},
+                function( data ) {
+                  $( ".result" ).html( data );
+              });
+            });
+          }
+        }
     }
 
-    function deleteUser(user_name){
-      console.log(user_name);
-      confirm("Are you sure you want to delete user " + user_name);
+    function deleteUser(user_name, unique_id){
+      var result = confirm("Are you sure you want to delete user " + user_name);
+      if (result){
+        firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+          console.log(idToken);
+          console.log(unique_id);
+          var res = $.post( "http://localhost:3000/admin/delete_user", 
+            {token: idToken, account_id: unique_id},
+            function( data ) {
+              $( ".result" ).html( data );
+            });
+          console.log(user_name);
+        }).catch(function(error){
+          console.log("error sending token", error);
+        });
+      }
+    }
+
+    function editUser(unique_id){
+      window.location = ("edit_user.html#" + unique_id);
     }
 
     </script>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+      crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
