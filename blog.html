@@ -28,7 +28,6 @@
             <h3>University at Albany</h3>
         </div>
       </header>
-      </div>
       
       <div class="nav-scroller py-1 mb-2">
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #dab3ff">
@@ -37,13 +36,13 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="blog.html">Home <span class="sr-only">(current)</span></a>
+              <li class="nav-item">
+                <a class="nav-link" href="blog.html">Home<span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="courses.html">Courses</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item active">
                 <a class="nav-link" href="messagecenter.html">Message Center</a>
               </li>
               <li class="nav-item" >
@@ -59,9 +58,10 @@
                 </li>
               </ul>
             </form>
-            </div>
+          </div>
         </nav>
-        </div>
+      </div>
+    </div>
       
 
     <main role="main" class="container">
@@ -116,13 +116,6 @@
     </main>
 
     <script language="javascript">    
-
-    if(localStorage.getItem('manageUser') === 'true') {
-      document.getElementById('manager-users').style.display = 'block';
-    } else {
-      document.getElementById('manager-users').style.display = 'none';
-    }
-
     var firebaseConfig = {
       apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
       authDomain: "educationalmanagement-44760.firebaseapp.com",
@@ -184,18 +177,7 @@
         window.location = ("login.html");
       }
     }   
-    </script>
-      
-    <!--load posts -->
-      <script>
-      // Your web app's Firebase configuration
-      var firebaseConfig = {
-        apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
-        authDomain: "educationalmanagement-44760.firebaseapp.com",
-        projectId: "educationalmanagement-44760",
-      };
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
+
       var db = firebase.firestore();
           
           db.collection("Posts").orderBy('date').get().then((querySnapshot) => {
