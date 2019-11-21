@@ -66,6 +66,10 @@
         <div class="col-md-8 blog-main">
             <div id="blogs">
             </div>
+            <a class="nav-link" href="javascript:revealCommentBox()">Add Comment</a>
+            <div id = "comment_box"></div>
+            <br>
+            <div id="comments"></div>
         </div>
       </div>
     </main>
@@ -125,18 +129,98 @@
                   var showList = document.getElementById('blogs');
                   var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
                   +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ id + ')">Delete</a>' + '<a class="nav-link" href="javascript:revealCommentBox()">Add Comment</a><hr>';
+                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ id + ')">Delete</a><hr>';
                   showList.insertAdjacentHTML( 'afterbegin', html_add );
+
+                    var comment_query = firestore.collection('Posts').doc(selection).collection("Comments").orderBy('date').get().then((querySnapshot) => {
+                    querySnapshot.forEach((commentDoc) => {
+                      var commentSection = document.getElementById('comments');
+                                      var body = `${doc.get("body")}`;
+                      var commentDate = `${commentDoc.get("date").toDate()}`;
+                      var commentDateString = commentDate.split(' ').slice(1, 4).join(' ');
+                      var commentDisplayName = `${commentDoc.get("displayName")}`;
+                      var commentBody = `${commentDoc.get('body')}`
+                      var commentAdd = '<div class="card"><div class="card-header">' + commentDisplayName + '<br>' + commentDateString + '</div><div class="card-body">' + commentBody + '</div></div><br>';
+                      console.log(commentBody);
+                      commentSection.insertAdjacentHTML('afterbegin', commentAdd);
+                    });
+                  });
                  
         }
         else{
                   var showList = document.getElementById('blogs');
                   var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
                   +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br><a class="nav-link" href="javascript:revealCommentBox()">Add Comment</a><hr>';
+                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br><hr>';
                   showList.insertAdjacentHTML( 'afterbegin', html_add );
+
+                    var comment_query = firestore.collection('Posts').doc(selection).collection("Comments").orderBy('date').get().then((querySnapshot) => {
+                    querySnapshot.forEach((commentDoc) => {
+                      var commentSection = document.getElementById('comments');
+                                      var body = `${doc.get("body")}`;
+                      var commentDate = `${commentDoc.get("date").toDate()}`;
+                      var commentDateString = commentDate.split(' ').slice(1, 4).join(' ');
+                      var commentDisplayName = `${commentDoc.get("displayName")}`;
+                      var commentBody = `${commentDoc.get('body')}`
+                      var commentAdd = '<div class="card"><div class="card-header">' + commentDisplayName + '<br>' + commentDateString + '</div><div class="card-body">' + commentBody + '</div></div><br>';
+                      console.log(commentBody);
+                      commentSection.insertAdjacentHTML('afterbegin', commentAdd);
+                    });
+                  });
         }
     });
+
+    function submitComment(){
+      console.log("sumbitting comment");
+        if (signedIn != 1){
+          window.location = ("login.html");
+        }
+        var user = firebase.auth().currentUser;
+        if (user != null){
+          var full_name = firebase.auth().currentUser.displayName;
+          var input_body = document.getElementById("comment_body").value;
+          var creation_date = firebase.firestore.Timestamp.now().toDate();
+
+          // Save to DB
+          firestore.collection("Posts").doc(selection).collection("Comments").doc().set({
+              displayName: full_name,
+              body: input_body,
+              date: creation_date
+          }).then(function () {
+              console.log("Document successfully written!");
+              }).catch(function (error) {
+                    console.error("Error writing document: ", error);
+              });
+        }
+
+    }
+
+    function revealCommentBox(){
+      var showBox = document.getElementById('comment_box');
+      var html_add = '<textarea class="form-control" id="comment_body" rows="7"></textarea><button class="btn btn-primary btn-lg" type="submit" onclick="submitComment(this.form)">Post</button>';
+      showBox.insertAdjacentHTML('afterbegin', html_add);
+
+    }
+
+    function handleLogging(){
+      console.log("handle logging");
+      var currentState = document.getElementById('logging').innerHTML;
+      if (currentState == "Log in"){
+        window.location = ("login.html");
+      }
+      else if (currentState == "Log out"){
+        document.getElementById('logging').innerHTML = "Log in";
+        firebase.auth().signOut().then(function() {
+          localStorage.setItem('ermSignInState', '0');
+          console.log("Logged out");  
+        }).catch(function(error) {
+          console.log("Unable to log out");
+        });
+      }
+      else{
+        console.log("Error");
+      }
+    }
 
     </script>
     <script src="https://code.jquery.com/jquery-3.4.1.js"
