@@ -36,17 +36,14 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
-              <li class="nav-item">
+              <li class="nav-item active">
                 <a class="nav-link" href="blog.html">Home<span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="courses.html">Courses</a>
               </li>
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a class="nav-link" href="messagecenter.html">Message Center</a>
-              </li>
-              <li class="nav-item" >
-                <a class="nav-link" href="admin_page.html">ManageUsers</a>
               </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
@@ -69,6 +66,7 @@
         <div class="col-md-8 blog-main">
 
           <a href=javascript:createBlogPost()> Create Blog Post </a>
+            <hr>
             <div id="blogs">
             </div>
         </div>
@@ -131,9 +129,10 @@
     var firestore = firebase.firestore();
 
     //var user = firebase.auth().currentUser;
-
+    var admin_status = false;
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
+          console.log(user);
           document.getElementById('logging').innerHTML = "Log out";
         }
         else{
@@ -148,6 +147,13 @@
     else{
       document.getElementById('logging').innerHTML = "Log in";
     }
+
+    var adminStatus = localStorage.getItem('adminStatus');
+    var admin = false;
+    if (adminStatus == '1'){
+      admin = true;
+    }
+    console.log(admin);
 
     function handleLogging(){
       console.log("handle logging");
@@ -176,28 +182,38 @@
       else{
         window.location = ("login.html");
       }
-    }   
-
+    }  
       var db = firebase.firestore();
           
           db.collection("Posts").orderBy('date').get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 
                 var body = `${doc.get("body")}`;
+                var id = `${doc.id}`;
                 var date = `${doc.get("date").toDate()}`;
                 dateString = date.split(' ').slice(1, 4).join(' ');
                 var displayName = `${doc.get("displayName")}`;
                 var header = `${doc.get("header")}`;
-                
-                var showList = document.getElementById('blogs');
-                var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
-                +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                +'<hr>'
-                +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><a class="btn btn-outline-primary" href="#">Older</a><a class="btn btn-outline-secondary disabled" href="#">Newer</a>';
-                
-                showList.insertAdjacentHTML( 'afterbegin', html_add );
+                var delete_post = "";
+                console.log(admin);
+                if (false){ // ignore for now
+                  var showList = document.getElementById('blogs');
+                  var html_add = '<h2 class="blog-post-title"><a href=# >' + header + '</a></h2>'
+                  +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ id + ')">Delete</a>' + '<hr>';
+                  showList.insertAdjacentHTML( 'afterbegin', html_add );
+                 
+                }
+                else{
+                  var showList = document.getElementById('blogs');
+                  var html_add = '<h2 class="blog-post-title"><a href=blog_post.html#' + id + ' style="color: black">' + header + '</a></h2>'
+                  +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br><hr>';
+                  showList.insertAdjacentHTML( 'afterbegin', html_add );
+              }
             });
-});
+      });
+
       </script>
     <!-- button function -->
     <script>
@@ -215,8 +231,7 @@
         document.getElementById("downvote").innerText=downvote;
         voted=true
         }
-      }
-    </script>
+      }    </script>
 
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

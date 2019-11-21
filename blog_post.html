@@ -43,8 +43,8 @@
               <li class="nav-item">
                 <a class="nav-link" href="courses.html">Courses</a>
               </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="messagecenter.html">Message Center<span class="sr-only">(current)</span></a>
+              <li class="nav-item">
+                <a class="nav-link" href="messagecenter.html">Message Center</a>
               </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
@@ -61,39 +61,12 @@
       </div>
 
 
-    <main role="main" class="container">
+    <main role="main" class="container"> 
       <div class="row">
-          <div class="notification">
-                <a href="#">New Blog Post</a>
-            <p>
-              <strong>Jon Snow</strong> has posted a new blog post: <br>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin maximus mauris non justo convallis, in feugiat nunc commodo. Fusce pellentesque velit id magna posuere, laoreet ullamcorper enim vehicula. Sed ac condimentum urna. Vivamus rhoncus bibendum dui sit amet viverra...
-            </p>
-          </div>
-          
-           <div class="notification">
-                <a href="#">New Blog Post</a>
-            <p>
-              <strong>Abraham</strong> has posted a new blog post: <br>
-                Nulla facilisi. Etiam dignissim metus nibh, nec malesuada tortor pretium quis. Ut id rutrum neque, eget aliquet neque. Sed magna lectus, molestie et nibh quis, consectetur efficitur velit. Morbi sit amet ipsum non justo laoreet venenatis in ut justo. Ut porttitor lectus odio, nec cursus lacus aliquet non. Fusce ac enim a orci facilisis rutrum....
-            </p>
-          </div>
-          
-           <div class="notification">
-                <a href="#">New Blog Post</a>
-            <p>
-              <strong>Jinyu</strong> has posted a new blog post: <br>
-                Curabitur lobortis tortor ac lectus interdum, sed gravida ipsum efficitur. Proin in egestas urna. Maecenas nec lobortis erat. Sed vitae cursus augue. Morbi egestas iaculis mi, at tincidunt tellus elementum ac. Suspendisse in interdum diam. Proin congue enim condimentum eros suscipit gravida. Integer laoreet elit sed placerat luctus. Pellentesque...
-            </p>
-          </div>
-          
-           <div class="notification">
-                <a href="#">New Blog Post</a>
-            <p>
-              <strong>Keith</strong> has posted a new blog post: <br>
-                Vestibulum gravida tortor sed odio faucibus bibendum non eu turpis. Donec vel elit tempus, convallis sapien a, eleifend ante. Vestibulum viverra congue condimentum. Fusce pulvinar justo varius, scelerisque mauris ut, elementum turpis. Quisque a turpis eu nisi pulvinar mattis non sit amet nisl. Vestibulum hendrerit...
-            </p>
-          </div>
+        <div class="col-md-8 blog-main">
+            <div id="blogs">
+            </div>
+        </div>
       </div>
     </main>
 
@@ -128,31 +101,47 @@
     }
     else{
       document.getElementById('logging').innerHTML = "Log in";
+      window.location = ('blog.html');
     }
 
-    function handleLogging(){
-      console.log("handle logging");
-      var currentState = document.getElementById('logging').innerHTML;
-      if (currentState == "Log in"){
-        window.location = ("login.html");
-      }
-      else if (currentState == "Log out"){
-        document.getElementById('logging').innerHTML = "Log in";
-        firebase.auth().signOut().then(function() {
-          localStorage.setItem('ermSignInState', '0');
-          console.log("Logged out");  
-        }).catch(function(error) {
-          console.log("Unable to log out");
-        });
-      }
-      else{
-        console.log("Error");
-      }
-    }
+    var admin_status = localStorage.getItem('adminStatus');
+
+    var hashes = window.location.hash.split('#');
+    var selection = hashes[1];
+    selection = decodeURIComponent((selection + '').replace(/\+/g, '%20'));
+    console.log(selection);
+
+    var form = firestore.collection('Posts').doc(selection).get().then(function(doc){
+        var body = `${doc.get("body")}`;
+        var id = `${doc.id}`;
+        var date = `${doc.get("date").toDate()}`;
+        dateString = date.split(' ').slice(1, 4).join(' ');
+        var displayName = `${doc.get("displayName")}`;
+        var header = `${doc.get("header")}`;
+        var delete_post = "";
+        console.log(doc.data().body);
+        var showList = document.getElementById('blogs');
+        if (admin_status == '1'){ // ignore for now
+                  var showList = document.getElementById('blogs');
+                  var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
+                  +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ id + ')">Delete</a>' + '<a class="nav-link" href="javascript:revealCommentBox()">Add Comment</a><hr>';
+                  showList.insertAdjacentHTML( 'afterbegin', html_add );
+                 
+        }
+        else{
+                  var showList = document.getElementById('blogs');
+                  var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
+                  +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br><a class="nav-link" href="javascript:revealCommentBox()">Add Comment</a><hr>';
+                  showList.insertAdjacentHTML( 'afterbegin', html_add );
+        }
+    });
 
     </script>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+      integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+      crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
