@@ -17,6 +17,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-storage.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
 
   </head>
@@ -69,14 +70,14 @@
         <label for="exampleFormControlTextarea3">Blog Post Text:</label>
         <textarea class="form-control" id="post_body" rows="7"></textarea>
         <br>
-        <label for="exampleFormControlTextarea3">Blog Post Tags:</label>
-        <textarea class="form-control" id="post_tags" rows="1"></textarea>
+        <label for="exampleFormControlTextarea3">Course ID:</label>
+        <textarea class="form-control" id="post_tag" rows="1"></textarea>
         <br>
         <label for="labelPostType">Blog Post Type:</label>
         <br>
-        <label class="radio-inline"><input type="radio" name="post_type" checked> Blog </label>
-        <label class="radio-inline"><input type="radio" name="post_type"> Question </label>
-        <label class="radio-inline"><input type="radio" name="post_type"> Marketplace </label>
+        <label class="radio-inline"><input type="radio" name="post_type" id="blogRadio" checked> Blog </label>
+        <label class="radio-inline"><input type="radio" name="post_type" id="questionRadio"> Question </label>
+        <label class="radio-inline"><input type="radio" name="post_type" id="marketplaceRadio"> Marketplace </label>
         <br><br>
         <input type="file" id="input" onchange="handleFiles(this.files)">
         <br><br>
@@ -104,6 +105,8 @@
 
     firebase.initializeApp(firebaseConfig);
     var firestore = firebase.firestore();
+
+    var file_url = null;
 
     //var user = firebase.auth().currentUser;
     firebase.auth().onAuthStateChanged(user => {
@@ -157,7 +160,17 @@
           console.log(full_name);
           var input_header = document.getElementById("post_header").value;
           var input_body = document.getElementById("post_body").value;
+          var course_id = document.getElementById("post_tag").value
           var input_type = "blog";
+          if (document.getElementById('blogRadio').checked) {
+              input_type = 'blog';
+          }
+          if (document.getElementById('marketplaceRadio').checked) {
+              input_type = 'marketplace';
+          }
+          if (document.getElementById('questionRadio').checked) {
+              input_type = 'question';
+          }
           var creation_date = firebase.firestore.Timestamp.now().toDate();
 
           // Save to DB
@@ -166,9 +179,12 @@
               header: input_header,
               body: input_body,
               type: input_type,
-              date: creation_date
+              date: creation_date,
+              file: file_url,
+              course: course_id
           }).then(function () {
               console.log("Document successfully written!");
+              window.location.reload();
               }).catch(function (error) {
                     console.error("Error writing document: ", error);
               });
@@ -176,7 +192,16 @@
     }
 
     function handleFiles(file){
-
+      const ref = firebase.storage().ref();
+      console.log(file[0].name);
+      const name = file[0].name;
+      const metadata = { contentType: file[0].type };
+      const task = ref.child(name).put(file[0], metadata);
+      task.then(snapshot => snapshot.ref.getDownloadURL())
+            .then((url) => {
+              console.log(url);
+              file_url = url;
+            });
     }
 
     </script>

@@ -79,33 +79,41 @@
           </div>
         -->
 
-          <div class="p-3">
+          <!--<div class="p-3">
             <h4 class="font-italic">Archives</h4>
             <ol class="list-unstyled mb-0">
               <li><a href="#">August 2019</a></li>
               <li><a href="#">July 2019</a></li>
             </ol>
-          </div>
+          </div>-->
           <div class="p-3">
             <h4 class="font-italic">Filter</h4>
 
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-              <label class="form-check-label" for="defaultCheck1">
-                Marketplace
-              </label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-              <label class="form-check-label" for="defaultCheck2">
-                Professors
+              <input class="form-check-input" type="radio" onclick="changeButton('all');" name="RadioOptions" value="" id="all">
+              <label class="form-check-label" for="all">
+                All
               </label>
             </div>
 
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-              <label class="form-check-label" for="defaultCheck2">
-                Students
+              <input class="form-check-input" type="radio" name="RadioOptions" onclick="changeButton('blogRadio');" value="" id="blogRadio">
+              <label class="form-check-label" for="blogRadio">
+                Blogs
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="RadioOptions" onclick="changeButton('marketplace');" value="" id="marketplace">
+              <label class="form-check-label" for="marketplace">
+                Marketplace
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="RadioOptions" onclick="changeButton('questions');" value="" id="questions">
+              <label class="form-check-label" for="questions">
+                Questions
               </label>
             </div>
           </div>
@@ -114,6 +122,34 @@
     </main>
 
     <script language="javascript">    
+
+    function changeButton(state){
+      localStorage.setItem('queryType', state)
+      window.location.reload();
+    }
+
+    function setButtons(state){
+      console.log(state);
+        radioButton = document.getElementById(state);
+        console.log(radioButton);
+        radioButton.checked = true;
+
+        if (state == 'all'){
+          return ['marketplace', 'blog', 'question'];
+        }
+        if (state == 'marketplace'){
+          return ['marketplace'];
+        }
+        if (state == 'blogRadio'){
+          return ['blog'];
+        }
+        if (state == 'questions'){
+          return ['question'];
+        }
+
+
+    }
+
     var firebaseConfig = {
       apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
       authDomain: "educationalmanagement-44760.firebaseapp.com",
@@ -127,6 +163,13 @@
 
     firebase.initializeApp(firebaseConfig);
     var firestore = firebase.firestore();
+
+    var query_state = localStorage.getItem('queryType');
+    if(query_state == null)
+    {
+        query_state = 'all';
+    }
+    var query_filter = setButtons(query_state);
 
     //var user = firebase.auth().currentUser;
     var admin_status = false;
@@ -185,7 +228,7 @@
     }  
       var db = firebase.firestore();
           
-          db.collection("Posts").orderBy('date').get().then((querySnapshot) => {
+          db.collection("Posts").orderBy('date').where("type", "in", query_filter).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 
                 var body = `${doc.get("body")}`;
@@ -195,12 +238,17 @@
                 var displayName = `${doc.get("displayName")}`;
                 var header = `${doc.get("header")}`;
                 var delete_post = "";
+                var img_src = "";
+                if(doc.get("file") != null && doc.get("file") != undefined){
+                  var image = `${doc.get("file")}`;
+                  img_src = '<img src="' + image + '" style="max-height: 250px; max-width: 250px;">'
+                }
                 console.log(admin);
                 if (false){ // ignore for now
                   var showList = document.getElementById('blogs');
                   var html_add = '<h2 class="blog-post-title"><a href=# >' + header + '</a></h2>'
                   +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ id + ')">Delete</a>' + '<hr>';
+                  +'<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ id + ')">Delete</a>' + '<hr>';
                   showList.insertAdjacentHTML( 'afterbegin', html_add );
                  
                 }
@@ -208,7 +256,7 @@
                   var showList = document.getElementById('blogs');
                   var html_add = '<h2 class="blog-post-title"><a href=blog_post.html#' + id + ' style="color: black">' + header + '</a></h2>'
                   +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                  +'<p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br><hr>';
+                  +'<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br><hr>';
                   showList.insertAdjacentHTML( 'afterbegin', html_add );
               }
             });
