@@ -1,153 +1,214 @@
-
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <title>Educational Resource Management</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/blog/">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="css/blog.css" rel="stylesheet">
-    <link href="css/navbar.css" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+  <title>Educational Resource Management</title>
 
-  </head>
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/blog/">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="css/blog.css" rel="stylesheet">
+  <link href="css/navbar.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
 
-  <body>
+</head>
 
-    <div class="container">
-      <header class="py-3">
-        <div class = "navbar-header">
-            <h3>University at Albany</h3>
-        </div>
-      </header>
-      
-      <div class="nav-scroller py-1 mb-2">
-        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #dab3ff">
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="blog.html">Home<span class="sr-only">(current)</span></a>
-              </li>
+<body>
+
+  <div class="container">
+    <header class="py-3">
+      <div class="navbar-header">
+        <h3>University at Albany</h3>
+      </div>
+    </header>
+
+    <div class="nav-scroller py-1 mb-2">
+      <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #dab3ff">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+          aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="blog.html">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="courses.html">Courses</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="messagecenter.html">Message Center</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+            <ul class="navbar-nav ml-auto">
               <li class="nav-item">
-                <a class="nav-link" href="courses.html">Courses</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="messagecenter.html">Message Center</a>
+                <a class="nav-link" href="javascript:handleLogging()"><span id="logging"></span></a>
               </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-primary" type="submit">Search</button>
-                <ul class="navbar-nav ml-auto">
-                  <li class="nav-item">
-                   <a class="nav-link" href="javascript:handleLogging()"><span id="logging"></span></a>
-                </li>
-              </ul>
-            </form>
-          </div>
-        </nav>
-      </div>
-    </div>
-      
-
-    <main role="main" class="container">
-      <div class="row">
-        <div class="col-md-8 blog-main">
-
-          <a href=javascript:createBlogPost()> Create Blog Post </a>
-            <hr>
-            <div id="blogs">
-            </div>
+          </form>
         </div>
+      </nav>
+    </div>
+  </div>
 
-        <aside class="col-md-4">
-          <!--
+
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-md-8 blog-main">
+
+        <a href=javascript:createBlogPost()> Create Blog Post </a>
+        <hr>
+        <div id="blogs">
+        </div>
+      </div>
+
+      <aside class="col-md-4">
+        <!--
           <div class="p-3">
             <h4 class="font-italic">About</h4>
             <p class="mb-0"> Some information about the student or professor can go here.</p>
           </div>
         -->
 
-          <!--<div class="p-3">
+        <!--<div class="p-3">
             <h4 class="font-italic">Archives</h4>
             <ol class="list-unstyled mb-0">
               <li><a href="#">August 2019</a></li>
               <li><a href="#">July 2019</a></li>
             </ol>
           </div>-->
-          <div class="p-3">
-            <h4 class="font-italic">Filter</h4>
-
-            <div class="form-check">
-              <input class="form-check-input" type="radio" onclick="changeButton('all');" name="RadioOptions" value="" id="all">
-              <label class="form-check-label" for="all">
-                All
-              </label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="RadioOptions" onclick="changeButton('blogRadio');" value="" id="blogRadio">
-              <label class="form-check-label" for="blogRadio">
-                Blogs
-              </label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="RadioOptions" onclick="changeButton('marketplace');" value="" id="marketplace">
-              <label class="form-check-label" for="marketplace">
-                Marketplace
-              </label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="RadioOptions" onclick="changeButton('questions');" value="" id="questions">
-              <label class="form-check-label" for="questions">
-                Questions
-              </label>
-            </div>
+        <div class="p-3">
+          <h4 class="font-italic">Filter</h4>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" onclick="changeButton('all');" name="RadioOptions" value=""
+              id="all">
+            <label class="form-check-label" for="all">
+              All
+            </label>
           </div>
-        </aside>
-      </div>
-    </main>
 
-    <script language="javascript">    
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="RadioOptions" onclick="changeButton('blogRadio');"
+              value="" id="blogRadio">
+            <label class="form-check-label" for="blogRadio">
+              Blogs
+            </label>
+          </div>
 
-    function changeButton(state){
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="RadioOptions" onclick="changeButton('marketplace');"
+              value="" id="marketplace">
+            <label class="form-check-label" for="marketplace">
+              Marketplace
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="RadioOptions" onclick="changeButton('questions');"
+              value="" id="questions">
+            <label class="form-check-label" for="questions">
+              Questions
+            </label>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script type="text/javascript">
+
+    function changeButton(state) {
       localStorage.setItem('queryType', state)
       window.location.reload();
     }
 
-    function setButtons(state){
+    function setButtons(state) {
       console.log(state);
-        radioButton = document.getElementById(state);
-        console.log(radioButton);
-        radioButton.checked = true;
+      radioButton = document.getElementById(state);
+      console.log(radioButton);
+      radioButton.checked = true;
 
-        if (state == 'all'){
-          return ['marketplace', 'blog', 'question'];
-        }
-        if (state == 'marketplace'){
-          return ['marketplace'];
-        }
-        if (state == 'blogRadio'){
-          return ['blog'];
-        }
-        if (state == 'questions'){
-          return ['question'];
-        }
+      if (state == 'all') {
+        return ['marketplace', 'blog', 'question'];
+      }
+      if (state == 'marketplace') {
+        return ['marketplace'];
+      }
+      if (state == 'blogRadio') {
+        return ['blog'];
+      }
+      if (state == 'questions') {
+        return ['question'];
+      }
 
 
+    }
+
+    //Function to Update when upvote is pressed
+    function upvote(e) {
+      let id = e.target.id;
+      console.log('upvote', id);
+      var db = firebase.firestore();
+      var docRef = db.collection("Posts").doc(id);
+
+      docRef.get().then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          let upvote = doc.data().upvote
+          if (upvote == 0) {
+            docRef.update({ upvote: 1, downvote: 0 }).then(function (doc) {
+              // upvote_data = doc.data().upvote;
+              console.log("Document successfully written!", doc);
+              location.reload();
+
+            })
+              .catch(function (error) {
+                console.error("Error writing document: ", error);
+              });
+          }
+        } else {
+          console.log("No such document!");
+        }
+      })
+    }
+
+    function downvote(e) {
+      let id = e.target.id;
+      console.log('upvote', id);
+      var db = firebase.firestore();
+      var docRef = db.collection("Posts").doc(id);
+      docRef.get().then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          let downvote = doc.data().downvote
+          if (downvote == 0) {
+            docRef.update({ downvote: 1, upvote: 0 }).then(function (doc) {
+              // upvote_data = doc.data().upvote;
+              console.log("Document successfully written!", doc);
+              location.reload();
+
+            }).catch(function (error) {
+              console.error("Error writing document: ", error);
+            });
+          }
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }).catch(function (error) {
+        console.log("Error getting document:", error);
+      });
     }
 
     var firebaseConfig = {
@@ -165,126 +226,135 @@
     var firestore = firebase.firestore();
 
     var query_state = localStorage.getItem('queryType');
-    if(query_state == null)
-    {
-        query_state = 'all';
+    if (query_state == null) {
+      query_state = 'all';
     }
     var query_filter = setButtons(query_state);
 
     //var user = firebase.auth().currentUser;
     var admin_status = false;
     firebase.auth().onAuthStateChanged(user => {
-        if(user) {
-          console.log(user);
-          document.getElementById('logging').innerHTML = "Log out";
-        }
-        else{
-          document.getElementById('logging').innerHTML = "Log in";
-        }
-      });
-    
+      if (user) {
+        console.log(user);
+        document.getElementById('logging').innerHTML = "Log out";
+      }
+      else {
+        document.getElementById('logging').innerHTML = "Log in";
+      }
+    });
+
     var signedIn = localStorage.getItem('ermSignInState');
-    if (signedIn == '1'){
+    if (signedIn == '1') {
       document.getElementById('logging').innerHTML = "Log out";
     }
-    else{
+    else {
       document.getElementById('logging').innerHTML = "Log in";
     }
 
     var adminStatus = localStorage.getItem('adminStatus');
     var admin = false;
-    if (adminStatus == '1'){
+    if (adminStatus == '1') {
       admin = true;
     }
     console.log(admin);
 
-    function handleLogging(){
+    function handleLogging() {
       console.log("handle logging");
       var currentState = document.getElementById('logging').innerHTML;
-      if (currentState == "Log in"){
+      if (currentState == "Log in") {
         window.location = ("login.html");
       }
-      else if (currentState == "Log out"){
+      else if (currentState == "Log out") {
         document.getElementById('logging').innerHTML = "Log in";
-        firebase.auth().signOut().then(function() {
+        firebase.auth().signOut().then(function () {
           localStorage.setItem('ermSignInState', '0');
-          console.log("Logged out");  
-        }).catch(function(error) {
+          console.log("Logged out");
+        }).catch(function (error) {
           console.log("Unable to log out");
         });
       }
-      else{
+      else {
         console.log("Error");
       }
     }
 
-    function createBlogPost(){
-      if (signedIn == '1'){
+    function createBlogPost() {
+      if (signedIn == '1') {
         window.location = ("create_post.html")
       }
-      else{
+      else {
         window.location = ("login.html");
       }
-    }  
-      var db = firebase.firestore();
-          
-          db.collection("Posts").orderBy('date').where("type", "in", query_filter).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                
-                var body = `${doc.get("body")}`;
-                var id = `${doc.id}`;
-                var date = `${doc.get("date").toDate()}`;
-                dateString = date.split(' ').slice(1, 4).join(' ');
-                var displayName = `${doc.get("displayName")}`;
-                var header = `${doc.get("header")}`;
-                var delete_post = "";
-                var img_src = "";
-                if(doc.get("file") != null && doc.get("file") != undefined){
-                  var image = `${doc.get("file")}`;
-                  img_src = '<img src="' + image + '" style="max-height: 250px; max-width: 250px;">'
-                }
-                console.log(admin);
-                if (false){ // ignore for now
-                  var showList = document.getElementById('blogs');
-                  var html_add = '<h2 class="blog-post-title"><a href=# >' + header + '</a></h2>'
-                  +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                  +'<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ id + ')">Delete</a>' + '<hr>';
-                  showList.insertAdjacentHTML( 'afterbegin', html_add );
-                 
-                }
-                else{
-                  var showList = document.getElementById('blogs');
-                  var html_add = '<h2 class="blog-post-title"><a href=blog_post.html#' + id + ' style="color: black">' + header + '</a></h2>'
-                  +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                  +'<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br><hr>';
-                  showList.insertAdjacentHTML( 'afterbegin', html_add );
-              }
-            });
-      });
+    }
+    var db = firebase.firestore();
 
-      </script>
-    <!-- button function -->
-    <script>
-      var upvote=0,downvote=0,voted=false;
-      function upvote_count(){
-        if(!voted){
-          upvote+=1;
-          document.getElementById("upvote").innerText=upvote;
-          voted=true
-          }
-      }
-      function downvote_count(){
-        if(!voted){
-        downvote+=1;
-        document.getElementById("downvote").innerText=downvote;
-        voted=true
+    db.collection("Posts").orderBy('date').where("type", "in", query_filter).get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+
+        var body = `${doc.get("body")}`;
+        var id = `${doc.id}`;
+        var date = `${doc.get("date").toDate()}`;
+        dateString = date.split(' ').slice(1, 4).join(' ');
+        var displayName = `${doc.get("displayName")}`;
+        var header = `${doc.get("header")}`;
+        var upvote_data = `${doc.get("upvote")}`;
+        var downvote_data = `${doc.get("downvote")}`;
+        var delete_post = "";
+        var img_src = "";
+        if (doc.get("file") != null && doc.get("file") != undefined) {
+          var image = `${doc.get("file")}`;
+          img_src = '<img src="' + image + '" style="max-height: 250px; max-width: 250px;">'
         }
-      }    </script>
+        console.log(admin);
+        if (false) { // ignore for now
+          var showList = document.getElementById('blogs');
+          var html_add = '<h2 class="blog-post-title"><a href=# >' + header + '</a></h2>'
+            + '<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+            + '<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost(' + id + ')">Delete</a>' + '<hr>';
+          showList.insertAdjacentHTML('afterbegin', html_add);
+
+        }
+        else {
+          var showList = document.getElementById('blogs');
+          var html_add =
+
+            `
+            <h2 class="blog-post-title"><a href="blog_post.html" + ${id} style="color:black"> ${header}</a></h2>
+            <p class="blog-post-meta"> ${dateString} by <a href="#"> ${displayName} </a></p>
+            <p> ${body} </p>
+              <p1>
+                <button type="button" onclick='upvote(event)'>
+                  <img src="img/upvote.png" alt="upvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="upvote">${upvote_data}</p2>
+                <button type="button" onclick='downvote(event)'>
+                  <img src="img/downvote.jpeg" alt="downvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="downvote">${downvote_data}</p2>
+              </p1>
+            <br><br><hr>
+          `
+          showList.insertAdjacentHTML('afterbegin', html_add);
 
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        }
+      });
+    });
 
-    </body>
+  </script>
+  
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+</body>
+
 </html>
