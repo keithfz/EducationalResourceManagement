@@ -161,8 +161,7 @@
       console.log('upvote', id);
       var db = firebase.firestore();
       var docRef = db.collection("Posts").doc(id);
-
-      docRef.get().then(function (doc) {
+       docRef.get().then(function (doc) {
         if (doc.exists) {
           console.log("Document data:", doc.data());
           let upvote = doc.data().upvote
@@ -182,10 +181,10 @@
         }
       })
     }
-
+    //Function to Update the downvote
     function downvote(e) {
       let id = e.target.id;
-      console.log('upvote', id);
+      console.log('downvote', id);
       var db = firebase.firestore();
       var docRef = db.collection("Posts").doc(id);
       docRef.get().then(function (doc) {
