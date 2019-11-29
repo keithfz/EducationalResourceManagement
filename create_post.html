@@ -173,6 +173,8 @@
               input_type = 'question';
           }
           var creation_date = firebase.firestore.Timestamp.now().toDate();
+          var upvotes=0;
+          var downvoted=0;
 
           // Save to DB
           firestore.collection("Posts").doc().set({
@@ -183,8 +185,8 @@
               date: creation_date,
               file: file_url,
               course: course_id,
-              upvotes: 0,
-              downvotes: 0
+              upvote:upvotes,
+              downvote:downvoted
           }).then(function () {
               console.log("Document successfully written!");
               window.location.reload();

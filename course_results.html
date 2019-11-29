@@ -157,6 +157,7 @@
             querySnapshot.forEach((doc) => {
                 var description = `${doc.get("Description")}`;
                 var code = `${doc.get("Code")}`;
+                console.log(code)
                 if(description.length > 200) description = description.substring(0,200);
                 description += "...";
                 var showList = document.getElementById('myList');

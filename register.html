@@ -162,6 +162,7 @@
             document.getElementById("errPswd").classList.remove('error-dis');
          }
       }
+      //Validation for all the input fields in Register page
       function validate() {
          var isValidationSuccess = false;
          var firstName = document.getElementById("firstName");
@@ -174,6 +175,8 @@
          var isFirstNameValid, isLastNameValid, isEmailValid, isUniIdVaild, isPasswdValid, isConfPswValid, isSelectOptionsValid, isPassMatch;
          var emailRegex = /^[a-zA-Z0-9._%+-]+@albany+\.edu$/;
          var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,15}$/;
+         var upvoted=[];
+         var downvoted=[];
          if (firstName.value == "" || !(isNaN(firstName.value)) ) {
             document.getElementById("error-fname").classList.remove('error-dis');
             isFirstNameValid = false;
@@ -237,12 +240,12 @@
             isValidationSuccess = true;
          }
          if (isValidationSuccess) {
-            saveToDB(firstName.value, lastName.value, email.value, pswd.value, selectOptions.value, uniId.value);
+            saveToDB(firstName.value, lastName.value, email.value, pswd.value, selectOptions.value, uniId.value,upvoted,downvoted);
          } else {
             return;
          }
       }
-      function saveToDB(fname, lname, emailValue, pswdValue, categoryValue, uniIdValue) {
+      function saveToDB(fname, lname, emailValue, pswdValue, categoryValue, uniIdValue,upvoted,downvoted) {
          var firebaseConfig = {
             apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
             authDomain: "educationalmanagement-44760.firebaseapp.com",
@@ -265,6 +268,8 @@
          var email = emailValue;
          var password = pswdValue;
          var category = categoryValue;
+         var upvoted=upvoted;
+         var downvoted=downvoted;
          var submitButton = document.getElementById("submitButton");
          var foundRecord = [];
 
@@ -304,7 +309,9 @@
                               email: email,
                               category: category,
                               UniversityID: uid,
-                              account_id: unique_id
+                              account_id: unique_id,
+                              upvoted:upvoted,
+                              downvoted:downvoted
                            }).then(function () {
                               console.log("Document successfully written!");
                               resetAll();
