@@ -66,6 +66,8 @@
         <div class="col-md-8 blog-main">
 
           <a href=javascript:createBlogPost()> Create Blog Post </a>
+          <a href="admin_page.html" id="admin_button" style="display:none"> Manage Users </a>
+
             <hr>
             <div id="blogs">
             </div>
@@ -194,6 +196,7 @@
     var adminStatus = localStorage.getItem('adminStatus');
     var admin = false;
     if (adminStatus == '1'){
+      document.getElementById('admin_button').style.display="block";
       admin = true;
     }
     console.log(admin);
@@ -208,7 +211,10 @@
         document.getElementById('logging').innerHTML = "Log in";
         firebase.auth().signOut().then(function() {
           localStorage.setItem('ermSignInState', '0');
+          localStorage.setItem('adminStatus', '0');
           console.log("Logged out");  
+          window.location.reload();
+
         }).catch(function(error) {
           console.log("Unable to log out");
         });

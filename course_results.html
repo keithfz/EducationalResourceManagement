@@ -136,6 +136,7 @@
         document.getElementById('logging').innerHTML = "Log in";
         firebase.auth().signOut().then(function() {
           localStorage.setItem('ermSignInState', '0');
+          localStorage.setItem('adminStatus', '0');
           console.log("Logged out");  
         }).catch(function(error) {
           console.log("Unable to log out");

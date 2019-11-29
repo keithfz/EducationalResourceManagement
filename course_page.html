@@ -114,6 +114,7 @@
         document.getElementById('logging').innerHTML = "Log in";
         firebase.auth().signOut().then(function() {
           localStorage.setItem('ermSignInState', '0');
+          localStorage.setItem('adminStatus', '0');
           console.log("Logged out");  
         }).catch(function(error) {
           console.log("Unable to log out");
@@ -127,6 +128,11 @@
     </script>
       
        <script>
+
+        function subscribeToCourse(course){
+          var user = firebase.auth().currentUser.uid;
+        }
+
         var hashes = window.location.hash.split('#');
         var selection = hashes[1];
         selection = decodeURIComponent((selection + '').replace(/\+/g, '%20'));
@@ -138,7 +144,8 @@
                 var code = `${doc.get("Code")}`;
                 var description = `${doc.get("Description")}`;
                 var showList = document.getElementById('classResult');
-                var html_add = '<hr><h2 class="blog-post-title">' + code + ' - ' + selection2;
+                var html_add = '<a href="javascript:subscribeToCourse(' + `'${doc.get("Code")}'` + ')">Subscribe</a>';
+                html_add += '<hr><h2 class="blog-post-title">' + code + ' - ' + selection2;
                 html_add += '</h2><hr><h2 class="blog-post-title">Description</h2><p>';
                 html_add += description
                 html_add += '</p>'

@@ -299,7 +299,7 @@
                            console.log(user.uid);
 
                            // Save to DB
-                           firestore.collection("Users").doc().set({
+                           firestore.collection("Users").doc(unique_id).set({
                               displayName: fullName,
                               email: email,
                               category: category,

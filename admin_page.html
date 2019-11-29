@@ -46,8 +46,8 @@
               <li class="nav-item active">
                 <a class="nav-link" href="messagecenter.html">Message Center</a>
               </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="admin_page.html">Manage_Users<span class="sr-only">(current)</span></a>
+              <li class="nav-item" id="admin_button" style="display:none">
+                <a class="nav-link" href="admin_page.html">Admin</a>
               </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
@@ -137,7 +137,7 @@
         firestore.collection("Users").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 var showList = document.getElementById('table-group');
-                var html_add = '<tr><td><a href="course_results.html#' + `${doc.get("displayName")}` + '">';
+                var html_add = '<tr><td>';
                 html_add += `${doc.get("displayName")}`;
                 html_add += '</a></td>';
                 html_add += '<td><a href="javascript:editUser(' + `'${doc.get("account_id")}'` + ')"> Edit User </a></td>';
@@ -157,6 +157,7 @@
         document.getElementById('logging').innerHTML = "Log in";
         firebase.auth().signOut().then(function() {
           localStorage.setItem('ermSignInState', '0');
+          localStorage.setItem('adminStatus', '0');
           console.log("Logged out");  
           window.location("blog.html");
         }).catch(function(error) {

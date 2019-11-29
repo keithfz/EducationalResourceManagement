@@ -137,6 +137,7 @@
         document.getElementById('logging').innerHTML = "Log in";
         firebase.auth().signOut().then(function() {
           localStorage.setItem('ermSignInState', '0');
+          localStorage.setItem('adminStatus', '0');
           console.log("Logged out");  
           window.location("blog.html");
         }).catch(function(error) {
@@ -181,7 +182,9 @@
               type: input_type,
               date: creation_date,
               file: file_url,
-              course: course_id
+              course: course_id,
+              upvotes: 0,
+              downvotes: 0
           }).then(function () {
               console.log("Document successfully written!");
               window.location.reload();

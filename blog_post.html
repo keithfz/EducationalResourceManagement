@@ -46,6 +46,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="messagecenter.html">Message Center</a>
               </li>
+              <li class="nav-item" id="admin_button" style="display:none">
+                <a class="nav-link" href="admin_page.html">Admin</a>
+              </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -105,11 +108,11 @@
     }
     else{
       document.getElementById('logging').innerHTML = "Log in";
-      window.location = ('blog.html');
     }
 
     var admin_status = localStorage.getItem('adminStatus');
-
+    console.log("admin");
+    console.log(admin_status);
     var hashes = window.location.hash.split('#');
     var selection = hashes[1];
     selection = decodeURIComponent((selection + '').replace(/\+/g, '%20'));
@@ -193,6 +196,7 @@
               date: creation_date
           }).then(function () {
               console.log("Document successfully written!");
+              window.location.reload();
               }).catch(function (error) {
                     console.error("Error writing document: ", error);
               });
@@ -217,6 +221,7 @@
         document.getElementById('logging').innerHTML = "Log in";
         firebase.auth().signOut().then(function() {
           localStorage.setItem('ermSignInState', '0');
+          localStorage.setItem('adminStatus', '0');
           console.log("Logged out");  
         }).catch(function(error) {
           console.log("Unable to log out");
