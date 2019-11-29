@@ -48,8 +48,8 @@
               <a class="nav-link" href="messagecenter.html">Message Center</a>
             </li>
           </ul>
-          <form class="form-inline my-2 my-lg-0" action='blog_results.html'method="GET">
-            <input class="form-control mr-sm-2" name="search"type="search" placeholder="Search" aria-label="Search">
+          <form class="form-inline my-2 my-lg-0" action="blog_results.html" method="GET">
+            <input class="form-control mr-sm-2" name='search'type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-primary" type="submit">Search</button>
             <ul class="navbar-nav ml-auto">
               <li class="nav-item">
@@ -127,6 +127,7 @@
   </main>
 
   <script type="text/javascript">
+
     function changeButton(state) {
       localStorage.setItem('queryType', state)
       window.location.reload();
@@ -284,8 +285,23 @@
         window.location = ("login.html");
       }
     }
-    var db = firebase.firestore();
+    // parse search
+    function parseQuery(str){
+        var pq = (str || document.location.search)
+        if (pq == " "){
+            return { };
+        }
+        pq = pq.replace(/([?])(search)/,'')
+        pq = pq.replace('=','')
+        console.log(pq)
+        var pr = pq.split(/[=?+]/)
+        console.log(pr.length)
+        return pr
+      }
 
+    var db = firebase.firestore();
+    var _search = parseQuery(window.location.search)
+    var pr_length = _search.length
     db.collection("Posts").orderBy('date').where("type", "in", query_filter).get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
 
@@ -299,10 +315,20 @@
         var downvote_data = `${doc.get("downvote")}`;
         var delete_post = "";
         var img_src = "";
+        console.log(body,_search)
         if (doc.get("file") != null && doc.get("file") != undefined) {
           var image = `${doc.get("file")}`;
           img_src = '<img src="' + image + '" style="max-height: 250px; max-width: 250px;">'
         }
+        var match=0
+        var i=0
+        for(i;i< pr_length;i++){
+            if(body.includes(_search[i])){
+                match++;
+            }
+        }
+        console.log(match)
+        if(match+1 >= pr_length){
         console.log(admin);
         if (false) { // ignore for now
           var showList = document.getElementById('blogs');
@@ -336,10 +362,13 @@
 
 
         }
+        }
+
       });
     });
 
   </script>
+
   
 
 
