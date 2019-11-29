@@ -48,8 +48,8 @@
               <a class="nav-link" href="messagecenter.html">Message Center</a>
             </li>
           </ul>
-          <form class="form-inline my-2 my-lg-0" action='blog_results.html'method="GET">
-            <input class="form-control mr-sm-2" name="search"type="search" placeholder="Search" aria-label="Search">
+          <form class="form-inline my-2 my-lg-0" action="blog_results.html" method="GET">
+            <input class="form-control mr-sm-2" name='search'type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-primary" type="submit">Search</button>
             <ul class="navbar-nav ml-auto">
               <li class="nav-item">
@@ -63,14 +63,11 @@
   </div>
 
 
-
   <main role="main" class="container">
     <div class="row">
       <div class="col-md-8 blog-main">
 
         <a href=javascript:createBlogPost()> Create Blog Post </a>
-          <a href="admin_page.html" id="admin_button" style="display:none"> Manage Users </a>
-
         <hr>
         <div id="blogs">
         </div>
@@ -130,6 +127,7 @@
   </main>
 
   <script type="text/javascript">
+
     function changeButton(state) {
       localStorage.setItem('queryType', state)
       window.location.reload();
@@ -254,8 +252,7 @@
 
     var adminStatus = localStorage.getItem('adminStatus');
     var admin = false;
-    if (adminStatus == '1'){
-      document.getElementById('admin_button').style.display="block";
+    if (adminStatus == '1') {
       admin = true;
     }
     console.log(admin);
@@ -270,11 +267,8 @@
         document.getElementById('logging').innerHTML = "Log in";
         firebase.auth().signOut().then(function () {
           localStorage.setItem('ermSignInState', '0');
-          localStorage.setItem('adminStatus', '0');
-          console.log("Logged out");  
-          window.location.reload();
-
-        }).catch(function(error) {
+          console.log("Logged out");
+        }).catch(function (error) {
           console.log("Unable to log out");
         });
       }
@@ -291,8 +285,23 @@
         window.location = ("login.html");
       }
     }
-    var db = firebase.firestore();
+    // parse search
+    function parseQuery(str){
+        var pq = (str || document.location.search)
+        if (pq == " "){
+            return { };
+        }
+        pq = pq.replace(/([?])(search)/,'')
+        pq = pq.replace('=','')
+        console.log(pq)
+        var pr = pq.split(/[=?+]/)
+        console.log(pr.length)
+        return pr
+      }
 
+    var db = firebase.firestore();
+    var _search = parseQuery(window.location.search)
+    var pr_length = _search.length
     db.collection("Posts").orderBy('date').where("type", "in", query_filter).get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
 
@@ -306,10 +315,21 @@
         var downvote_data = `${doc.get("downvote")}`;
         var delete_post = "";
         var img_src = "";
+        console.log(body,_search)
         if (doc.get("file") != null && doc.get("file") != undefined) {
           var image = `${doc.get("file")}`;
           img_src = '<img src="' + image + '" style="max-height: 250px; max-width: 250px;">'
         }
+        var match=0
+        var i=0
+        for(i;i< pr_length;i++){
+            if(body.includes(_search[i])){
+                match++;
+            }
+        }
+        console.log(match)
+        if(pr_length>3){
+            if(match+2 >= pr_length){
         console.log(admin);
         if (false) { // ignore for now
           var showList = document.getElementById('blogs');
@@ -324,7 +344,7 @@
           var html_add =
 
             `
-            <h2 class="blog-post-title"><a href="blog_post.html#${id}" style="color:black"> ${header}</a></h2>
+            <h2 class="blog-post-title"><a href="blog_post.html" + ${id} style="color:black"> ${header}</a></h2>
             <p class="blog-post-meta"> ${dateString} by <a href="#"> ${displayName} </a></p>
             <p> ${body} </p>
               <p1>
@@ -340,13 +360,49 @@
             <br><br><hr>
           `
           showList.insertAdjacentHTML('afterbegin', html_add);
-
+        }
+        }
+        }else{
+            if(match >= pr_length){
+        console.log(admin);
+        if (false) { // ignore for now
+          var showList = document.getElementById('blogs');
+          var html_add = '<h2 class="blog-post-title"><a href=# >' + header + '</a></h2>'
+            + '<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+            + '<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost(' + id + ')">Delete</a>' + '<hr>';
+          showList.insertAdjacentHTML('afterbegin', html_add);
 
         }
+        else {
+          var showList = document.getElementById('blogs');
+          var html_add =
+
+            `
+            <h2 class="blog-post-title"><a href="blog_post.html" + ${id} style="color:black"> ${header}</a></h2>
+            <p class="blog-post-meta"> ${dateString} by <a href="#"> ${displayName} </a></p>
+            <p> ${body} </p>
+              <p1>
+                <button type="button" onclick='upvote(event)'>
+                  <img src="img/upvote.png" alt="upvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="upvote">${upvote_data}</p2>
+                <button type="button" onclick='downvote(event)'>
+                  <img src="img/downvote.jpeg" alt="downvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="downvote">${downvote_data}</p2>
+              </p1>
+            <br><br><hr>
+          `
+          showList.insertAdjacentHTML('afterbegin', html_add);
+        }
+        }
+        }
+
       });
     });
 
   </script>
+
   
 
 
