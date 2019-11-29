@@ -328,7 +328,8 @@
             }
         }
         console.log(match)
-        if(match >= pr_length){
+        if(pr_length>3){
+            if(match+2 >= pr_length){
         console.log(admin);
         if (false) { // ignore for now
           var showList = document.getElementById('blogs');
@@ -359,8 +360,41 @@
             <br><br><hr>
           `
           showList.insertAdjacentHTML('afterbegin', html_add);
+        }
+        }
+        }else{
+            if(match >= pr_length){
+        console.log(admin);
+        if (false) { // ignore for now
+          var showList = document.getElementById('blogs');
+          var html_add = '<h2 class="blog-post-title"><a href=# >' + header + '</a></h2>'
+            + '<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+            + '<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost(' + id + ')">Delete</a>' + '<hr>';
+          showList.insertAdjacentHTML('afterbegin', html_add);
 
+        }
+        else {
+          var showList = document.getElementById('blogs');
+          var html_add =
 
+            `
+            <h2 class="blog-post-title"><a href="blog_post.html" + ${id} style="color:black"> ${header}</a></h2>
+            <p class="blog-post-meta"> ${dateString} by <a href="#"> ${displayName} </a></p>
+            <p> ${body} </p>
+              <p1>
+                <button type="button" onclick='upvote(event)'>
+                  <img src="img/upvote.png" alt="upvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="upvote">${upvote_data}</p2>
+                <button type="button" onclick='downvote(event)'>
+                  <img src="img/downvote.jpeg" alt="downvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="downvote">${downvote_data}</p2>
+              </p1>
+            <br><br><hr>
+          `
+          showList.insertAdjacentHTML('afterbegin', html_add);
+        }
         }
         }
 
