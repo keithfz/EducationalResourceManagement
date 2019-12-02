@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Educational Resource Management</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/blog/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="css/message.css" rel="stylesheet">
+    <link href="css/navbar.css" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
+    
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <header class="py-3">
+        <div class = "navbar-header">
+            <h3>University at Albany</h3>
+        </div>
+      </header>
+
+      <div class="nav-scroller py-1 mb-2">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #dab3ff">
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="blog.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="courses.html">Courses</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="messagecenter.html">Message Center<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="messages.html">Messages</a>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-primary" type="submit">Search</button>
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item">
+                   <a class="nav-link" href="javascript:handleLogging()"><span id="logging"></span></a>
+                </li>
+              </ul>
+            </form>
+          </div>
+        </nav>
+      </div>
+      <main role="main" class="container">
+        <div class="row">
+            <div class="notification">
+               <div id = "message"></div>
+            </div>
+        </div>
+    </main>
+      
+      <script>
+        var firebaseConfig = {
+          apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
+          authDomain: "educationalmanagement-44760.firebaseapp.com",
+          databaseURL: "https://educationalmanagement-44760.firebaseio.com",
+          projectId: "educationalmanagement-44760",
+          storageBucket: "educationalmanagement-44760.appspot.com",
+          messagingSenderId: "357116925214",
+          appId: "1:357116925214:web:77a9f6e3199168b149650f",
+          measurementId: "G-0ZSQM3PN5L"
+        }
+    
+        firebase.initializeApp(firebaseConfig);
+        var firestore = firebase.firestore();
+    
+        
+        firebase.auth().onAuthStateChanged(user => {
+            if(user) {
+              document.getElementById('logging').innerHTML = "Log out";
+            }
+            else{
+              document.getElementById('logging').innerHTML = "Log in";
+            }
+          });
+        
+        var signedIn = localStorage.getItem('ermSignInState');
+        if (signedIn == '1'){
+          document.getElementById('logging').innerHTML = "Log out";
+        }
+        else{
+          document.getElementById('logging').innerHTML = "Log in";
+        }
+    
+        function handleLogging(){
+          console.log("handle logging");
+          var currentState = document.getElementById('logging').innerHTML;
+          if (currentState == "Log in"){
+            window.location = ("login.html");
+          }
+          else if (currentState == "Log out"){
+            document.getElementById('logging').innerHTML = "Log in";
+            firebase.auth().signOut().then(function() {
+              localStorage.setItem('ermSignInState', '0');
+              console.log("Logged out");  
+            }).catch(function(error) {
+              console.log("Unable to log out");
+            });
+          }
+          else{
+            console.log("Error");
+          }
+        }
+
+        firebase.auth().onAuthStateChanged(function(user) {
+                    var uid = user.uid;
+                    if (user) {
+                            firestore.collection("Messages").where("To","==",uid)
+                            .get()
+                            .then(function(querySnapshot){
+                        querySnapshot.forEach(function(doc){
+                        var from = `${doc.get("From")}`;
+                        var subject = `${doc.get("Subject")}`;
+                        var message = `${doc.get("Message")}`;
+                        var messageList = document.getElementById("message");
+                        var html_add = '<h3 class="blog-post-title"><p>' + subject + '</p></h3>'
+                         + '<p class="blog-post-meta">' + message + ' by <a href="#">' + from + '</a></p><hr>';
+
+                         messageList.insertAdjacentHTML('afterbegin',html_add);
+                })
+            })
+        }
+    })
+        
+        </script>
