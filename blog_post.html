@@ -139,7 +139,7 @@
                   var showList = document.getElementById('blogs');
                   var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
                   +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                  +'<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ id + ')">Delete</a><hr>';
+                  +'<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ `'${doc.id}'` + ')">Delete</a><hr>';
                   showList.insertAdjacentHTML( 'afterbegin', html_add );
 
                     var comment_query = firestore.collection('Posts').doc(selection).collection("Comments").orderBy('date').get().then((querySnapshot) => {
@@ -233,6 +233,24 @@
         console.log("Error");
       }
     }
+
+    function deletePost(post_id){
+      console.log(post_id);
+      var result = confirm("Are you sure you want to delete post?");
+      if (result){
+        firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+          console.log(idToken);
+          var res = $.post( "http://localhost:3000/admin/delete_post", 
+            {token: idToken, post_id: post_id},
+            function( data ) {
+              $( ".result" ).html( data );
+            });
+        }).catch(function(error){
+          console.log("error sending token", error);
+        });
+      }
+      window.location = ("blog.html");
+    }    
 
     </script>
     <script src="https://code.jquery.com/jquery-3.4.1.js"

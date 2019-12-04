@@ -203,6 +203,42 @@ app.post('/admin/delete_user', (req, res) => {
   //res.send('POST request');
  });
 
+app.post('/admin/delete_post', (req, res) => {
+  console.log(req);
+  console.log('deleting psot');
+  var key = req.body.token;
+  var post_id = req.body.post_id;
+
+  //console.log(key);
+  admin.auth().verifyIdToken(key)
+    .then(function(decodedToken) {
+      let uid = decodedToken.uid;
+      console.log("Uid");
+      console.log(uid);
+      let docRef = defaultDB.collection('Privledges').doc(uid);
+      console.log('succeded docref');
+      let getDoc = docRef.get()
+        .then(doc => {
+          if(!doc.exists){
+            console.log('Document does not exist, no admin priv');
+          } else{
+            if(doc.data().admin){
+                var query = defaultDB.collection('Posts').doc(post_id).delete();
+                console.log("successfully deleted");
+            }
+          }
+        }).catch(err => {
+          console.log("Error, could not get document", err);
+        });
+
+    }).catch(function(error) {
+      console.log("Invalid token");
+    });
+
+  res.send("Done");
+  //res.send('POST request');
+ });
+
 app.listen(port, (err) => {
   if (err) {
     return console.log('something bad happened', err)
