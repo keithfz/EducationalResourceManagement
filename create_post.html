@@ -99,7 +99,7 @@
       authDomain: "educationalmanagement-44760.firebaseapp.com",
       databaseURL: "https://educationalmanagement-44760.firebaseio.com",
       projectId: "educationalmanagement-44760",
-      storageBucket: "educationalmanagement-44760.appspot.com",
+      storageBucket: "gs://educationalmanagement-44760.appspot.com",
       messagingSenderId: "357116925214",
       appId: "1:357116925214:web:77a9f6e3199168b149650f",
       measurementId: "G-0ZSQM3PN5L"
@@ -114,6 +114,7 @@
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
           document.getElementById('logging').innerHTML = "Log out";
+          console.log(user);
         }
         else{
           document.getElementById('logging').innerHTML = "Log in";
@@ -200,11 +201,13 @@
 
     function handleFiles(file){
       const ref = firebase.storage().ref();
+      console.log(ref);
       console.log(file[0].name);
       const name = file[0].name;
+      console.log(name);
+      console.log(file[0]);
       const metadata = { contentType: file[0].type };
-      const task = ref.child(name).put(file[0], metadata);
-      task.then(snapshot => snapshot.ref.getDownloadURL())
+      const task = ref.child(name).put(file[0]).then(snapshot => snapshot.ref.getDownloadURL())
             .then((url) => {
               console.log(url);
               file_url = url;
