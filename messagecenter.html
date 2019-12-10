@@ -17,7 +17,36 @@
     <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-firestore.js"></script>
-    
+    <style>
+      .apply-flex {
+        display: flex;
+      }
+  
+      .card-block {
+        width: 760px;
+        margin: auto
+      }
+  
+      .error {
+        color: red;
+      }
+  
+      .error-dis {
+        display: none;
+      }
+  
+      .form-control {
+        width: 300px;
+        display: inline;
+      }
+      .handle-form {
+        margin: 0 0 0 410px;
+      }
+  
+      .form-btn {
+        margin: 0 410px 0 0;
+      }
+    </style>
 
   </head>
 
@@ -63,11 +92,12 @@
         </nav>
       </div>
       <div name="messagecenter">
-          <div>
-            <strong>For which subjects have you enrolled?</strong>
-          </div>
-          <br>
+         
           <div class="handle-form">
+              <div>
+                  <strong>For which subjects have you enrolled?</strong>
+                </div>
+                <br>
           <div class="apply-flex">
             <input type="text" id="course1" class="form-control" placeholder="Course 1" name="course1" autofocus>
             <span class="error error-dis" id="error-cname1">Please enter a valid course</span>
