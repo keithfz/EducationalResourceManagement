@@ -326,7 +326,7 @@
         var match=0
         var i=0
         for(i;i< pr_length;i++){
-            if(body.includes(_search[i])){
+            if(body.toUpperCase().includes(_search[i].toUpperCase())){
                 match++;
             }
         }
