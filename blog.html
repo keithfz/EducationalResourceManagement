@@ -240,6 +240,9 @@
       querySnapshot.forEach((doc) => {
 
         var body = `${doc.get("body")}`;
+        if(body.length>500){
+          body=body.substr(0,500).concat('.....');
+        }
         var id = `${doc.id}`;
         var date = `${doc.get("date").toDate()}`;
         dateString = date.split(' ').slice(1, 4).join(' ');
