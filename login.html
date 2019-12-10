@@ -43,7 +43,7 @@
 			<label for="inputPassword" class="sr-only">Password</label>
 			<div class="apply-flex">
 				<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-				<span class="error error-dis" id="error-pswd">Please Enter a Valid Password</span>
+				<span class="error error-dis" id="error-pswd"></span>
 			</div>
 			<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="validate(this.form)">Sign in</button>
 			<div class="forgot_password">
@@ -182,8 +182,10 @@
 					})
 				}).catch(function (error) {
 					console.log("error");
+					document.getElementById('error-pswd').innerHTML='Please Enter a Valid Password ';
 					var errorCode = error.code;
 					var errorMessage = error.message;
+					console.log(errorMessage)
 				});
 				return false;
 			}
