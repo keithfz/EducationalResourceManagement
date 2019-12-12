@@ -48,7 +48,7 @@
                 <a class="nav-link" href="messages.html">Messages</a>
               </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <form class="form-inline my-2 my-lg-0" action="blog_results.html" method="GET">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-primary" type="submit">Search</button>
                 <ul class="navbar-nav ml-auto">
@@ -145,9 +145,10 @@
               data.new_email = email;
             }
             if (acc_type != "Choose..."){
+              console.log(acc_type);
               data.new_acc_type = acc_type;
             }
-            var res = $.post( "http://localhost:3000/admin/edit_user", 
+            var res = $.post( "http://ec2-3-92-238-146.compute-1.amazonaws.com/api/admin/edit_user", 
               data,
               function( data ) {
                 $( ".result" ).html( data );

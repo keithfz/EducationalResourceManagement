@@ -182,10 +182,9 @@
 					})
 				}).catch(function (error) {
 					console.log("error");
-					document.getElementById('error-pswd').innerHTML='Please Enter a Valid Password ';
+                                        document.getElementById('error-pswd').innerHTML='Please Enter a Valid Password ';
 					var errorCode = error.code;
 					var errorMessage = error.message;
-					console.log(errorMessage)
 				});
 				return false;
 			}

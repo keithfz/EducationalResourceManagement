@@ -50,7 +50,7 @@
                 <a class="nav-link" href="messages.html">Messages</a>
               </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <form class="form-inline my-2 my-lg-0" action="blog_results.html" method="GET">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-primary" type="submit">Search</button>
                 <ul class="navbar-nav ml-auto">
@@ -164,7 +164,13 @@
           console.log(full_name);
           var input_header = document.getElementById("post_header").value;
           var input_body = document.getElementById("post_body").value;
-          var course_id = document.getElementById("post_tag").value
+          var course_id = document.getElementById("post_tag").value;
+
+          if(input_header == "" || input_body == "" || course_id == ""){
+              alert("Please complete every field");
+              return false;
+          }
+
           var input_type = "blog";
           if (document.getElementById('blogRadio').checked) {
               input_type = 'blog';

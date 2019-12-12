@@ -1,12 +1,12 @@
-<!doctype html>
-<html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
+
   <title>Educational Resource Management</title>
+
   <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/blog/">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -49,8 +49,8 @@
               <a class="nav-link" href="messages.html">Messages</a>
             </li>
           </ul>
-          <form class="form-inline my-2 my-lg-0" action='blog_results.html'method="GET">
-            <input class="form-control mr-sm-2" name="search"type="search" placeholder="Search" aria-label="Search">
+          <form class="form-inline my-2 my-lg-0" action="blog_results.html" method="GET">
+            <input class="form-control mr-sm-2" name='search'type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-primary" type="submit">Search</button>
             <ul class="navbar-nav ml-auto">
               <li class="nav-item">
@@ -69,8 +69,6 @@
       <div class="col-md-8 blog-main">
 
         <a href=javascript:createBlogPost()> Create Blog Post </a>
-          <a href="admin_page.html" id="admin_button" style="display:none"> Manage Users </a>
-
         <hr>
         <div id="blogs">
         </div>
@@ -130,19 +128,15 @@
   </main>
 
   <script type="text/javascript">
-
-    var emailId;
     function changeButton(state) {
       localStorage.setItem('queryType', state)
       window.location.reload();
     }
-
     function setButtons(state) {
       console.log(state);
       radioButton = document.getElementById(state);
       console.log(radioButton);
       radioButton.checked = true;
-
       if (state == 'all') {
         return ['marketplace', 'blog', 'question'];
       }
@@ -155,9 +149,59 @@
       if (state == 'questions') {
         return ['question'];
       }
-
     }
-
+    //Function to Update when upvote is pressed
+    function upvote(e) {
+      let id = e.target.id;
+      console.log('upvote', id);
+      var db = firebase.firestore();
+      var docRef = db.collection("Posts").doc(id);
+       docRef.get().then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          let upvote = doc.data().upvote
+          if (upvote == 0) {
+            docRef.update({ upvote: 1, downvote: 0 }).then(function (doc) {
+              // upvote_data = doc.data().upvote;
+              console.log("Document successfully written!", doc);
+              location.reload();
+            })
+              .catch(function (error) {
+                console.error("Error writing document: ", error);
+              });
+          }
+        } else {
+          console.log("No such document!");
+        }
+      })
+    }
+    //Function to Update the downvote
+    function downvote(e) {
+      let id = e.target.id;
+      console.log('downvote', id);
+      var db = firebase.firestore();
+      var docRef = db.collection("Posts").doc(id);
+      docRef.get().then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          let downvote = doc.data().downvote
+          if (downvote == 0) {
+            docRef.update({ downvote: 1, upvote: 0 }).then(function (doc) {
+              // upvote_data = doc.data().upvote;
+              console.log("Document successfully written!", doc);
+              location.reload();
+            }).catch(function (error) {
+              console.error("Error writing document: ", error);
+            });
+          }
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }).catch(function (error) {
+        console.log("Error getting document:", error);
+      });
+    }
     var firebaseConfig = {
       apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
       authDomain: "educationalmanagement-44760.firebaseapp.com",
@@ -168,82 +212,83 @@
       appId: "1:357116925214:web:77a9f6e3199168b149650f",
       measurementId: "G-0ZSQM3PN5L"
     }
-
     firebase.initializeApp(firebaseConfig);
     var firestore = firebase.firestore();
-
     var query_state = localStorage.getItem('queryType');
     if (query_state == null) {
       query_state = 'all';
     }
     var query_filter = setButtons(query_state);
-
+    //var user = firebase.auth().currentUser;
     var admin_status = false;
-
     firebase.auth().onAuthStateChanged(user => {
-      console.log(firebase.user);
       if (user) {
         console.log(user);
-        emailId = user.email;
         document.getElementById('logging').innerHTML = "Log out";
-      } else {
+      }
+      else {
         document.getElementById('logging').innerHTML = "Log in";
       }
     });
-
     var signedIn = localStorage.getItem('ermSignInState');
     if (signedIn == '1') {
       document.getElementById('logging').innerHTML = "Log out";
-    } else {
+    }
+    else {
       document.getElementById('logging').innerHTML = "Log in";
     }
-
     var adminStatus = localStorage.getItem('adminStatus');
     var admin = false;
-    if (adminStatus == '1'){
-      document.getElementById('admin_button').style.display="block";
+    if (adminStatus == '1') {
       admin = true;
     }
+    console.log(admin);
     function handleLogging() {
       console.log("handle logging");
       var currentState = document.getElementById('logging').innerHTML;
       if (currentState == "Log in") {
         window.location = ("login.html");
-      } else if (currentState == "Log out") {
+      }
+      else if (currentState == "Log out") {
         document.getElementById('logging').innerHTML = "Log in";
         firebase.auth().signOut().then(function () {
           localStorage.setItem('ermSignInState', '0');
-          localStorage.setItem('adminStatus', '0');
-          console.log("Logged out");  
-          window.location.reload();
-
-        }).catch(function(error) {
+          console.log("Logged out");
+        }).catch(function (error) {
           console.log("Unable to log out");
         });
-      } else {
+      }
+      else {
         console.log("Error");
       }
     }
-
-    // Function to create Blogs
     function createBlogPost() {
       if (signedIn == '1') {
         window.location = ("create_post.html")
-      } else {
+      }
+      else {
         window.location = ("login.html");
       }
     }
-
-    // Display the Blogs in the blogs page
+    // parse search
+    function parseQuery(str){
+        var pq = (str || document.location.search)
+        if (pq == " "){
+            return { };
+        }
+        pq = pq.replace(/([?])(search)/,'')
+        pq = pq.replace('=','')
+        console.log(pq)
+        var pr = pq.split(/[=?+]/)
+        console.log(pr.length)
+        return pr
+      }
     var db = firebase.firestore();
+    var _search = parseQuery(window.location.search)
+    var pr_length = _search.length
     db.collection("Posts").orderBy('date').where("type", "in", query_filter).get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-
         var body = `${doc.get("body")}`;
-        if(body.length>500){
-            body=body.substr(0,500).concat('.....');
-        }
-
         var id = `${doc.id}`;
         var date = `${doc.get("date").toDate()}`;
         dateString = date.split(' ').slice(1, 4).join(' ');
@@ -253,23 +298,38 @@
         var downvote_data = `${doc.get("downvote")}`;
         var delete_post = "";
         var img_src = "";
+        console.log(body,_search)
         if (doc.get("file") != null && doc.get("file") != undefined) {
           var image = `${doc.get("file")}`;
-          img_src = '<img src="' + image + '" style="max-width: 250px">'
+          img_src = '<img src="' + image + '" style="max-height: 250px; max-width: 250px;">'
         }
+        var match=0
+        var i=0
+        for(i;i< pr_length;i++){
+            if(body.toUpperCase().includes(_search[i].toUpperCase())){
+                match++;
+            }
+        }
+        console.log(match)
+        if(pr_length>3){
+            if(match+2 >= pr_length){
         console.log(admin);
         if (false) { // ignore for now
           var showList = document.getElementById('blogs');
-          var html_add = '<h2 class="blog-post-title"><a href=# >' + header + '</a></h2>' + '<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>' + '<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost(' + id + ')">Delete</a>' + '<hr>';
+          var html_add = '<h2 class="blog-post-title"><a href=# >' + header + '</a></h2>'
+            + '<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+            + '<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost(' + id + ')">Delete</a>' + '<hr>';
           showList.insertAdjacentHTML('afterbegin', html_add);
-
-        } else {
+        }
+        else {
+          if(body.length>500){
+          body=body.substr(0,500).concat('.....');
+          }
           var showList = document.getElementById('blogs');
           var html_add =
             `
-            <h2 class="blog-post-title"><a href="blog_post.html#${id}" style="color:black"> ${header}</a></h2>
+            <h2 class="blog-post-title"><a href="blog_post.html" + ${id} style="color:black"> ${header}</a></h2>
             <p class="blog-post-meta"> ${dateString} by <a href="#"> ${displayName} </a></p>
-            ${img_src}
             <p> ${body} </p>
               <p1>
                 <button type="button" onclick='upvote(event)'>
@@ -285,142 +345,55 @@
           `
           showList.insertAdjacentHTML('afterbegin', html_add);
         }
+        }
+        }else{
+            if(match >= pr_length){
+        console.log(admin);
+        if (false) { // ignore for now
+          var showList = document.getElementById('blogs');
+          var html_add = '<h2 class="blog-post-title"><a href=# >' + header + '</a></h2>'
+            + '<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+            + '<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost(' + id + ')">Delete</a>' + '<hr>';
+          showList.insertAdjacentHTML('afterbegin', html_add);
+        }
+        else {
+          var img_src = "";
+                if(doc.get("file") != undefined){
+                  var image = `${doc.get("file")}`;
+                  img_src = '<img src="' + image + '" style="max-width: 400px">'
+        }
+          if(body.length>500){
+            body=body.substr(0,500).concat('.....');
+          }
+          var showList = document.getElementById('blogs');
+          var html_add =
+            `
+            <h2 class="blog-post-title"><a href="blog_post.html#${id}" style="color:black"> ${header}</a></h2>
+            <p class="blog-post-meta"> ${dateString} by <a href="#"> ${displayName} </a></p>
+            <p> ${img_src} </p>
+            <p> ${body} </p>
+              <p1>
+                <button type="button" onclick='upvote(event)'>
+                  <img src="img/upvote.png" alt="upvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="upvote">${upvote_data}</p2>
+                <button type="button" onclick='downvote(event)'>
+                  <img src="img/downvote.jpeg" alt="downvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="downvote">${downvote_data}</p2>
+              </p1>
+            <br><br><hr>
+          `
+          showList.insertAdjacentHTML('afterbegin', html_add);
+        }
+        }
+        }
       });
     });
-
-    // Function call when downvote is clicked, Update posts and Users Database
-    function upvote(e) {
-      let userCanVote = false;
-      // database document id (posts)
-      let id = e.target.id;
-      let db = firebase.firestore();
-      var usersRef = db.collection("Users"); // Users database
-      let userInfo;
-      let userDocId;
-      let currentUpVoteValue; // current upvote value for the post
-      let currentDownVoteValue; // current downvote value for the post
-      // searching a document in Posts db
-      var docRef = db.collection("Posts").doc(id);
-      docRef.get().then(function (doc) {
-        if (doc.exists) {
-          console.log("Document data:", doc.data());
-          let currentUpVoteValue = doc.data().upvote;
-          let currentDownVoteValue = doc.data().downvote
-          // Create a query against the collection.
-          var query = usersRef.where("email", "==", emailId).get().then(function (querySnapshot) {
-            querySnapshot.forEach(function (uniqueUser) {
-              // doc.data() is never undefined for query doc snapshots
-              console.log(uniqueUser.id, " => ", uniqueUser.data());
-              userDocId = uniqueUser.id;
-              userInfo = uniqueUser.data();
-              // If user already up voted the post, return the control back
-              if (userInfo.upvoted.indexOf(id) != -1) {
-                userCanVote = false;
-                return;
-              }
-              // If user hasnt  upvoted, giving him chance to vote
-              if (userInfo.upvoted.indexOf(id) == -1) {
-                userCanVote = true;
-                currentUpVoteValue = currentUpVoteValue + 1;
-                userInfo.upvoted.push(id);
-              }
-              // If user hasn't downvoted,keep the current down vote value same 
-              if (userInfo.downvoted.indexOf(id) == -1) {
-                currentDownVoteValue = currentDownVoteValue
-              }
-              // If user already downvoted, decrease the value by 1 and remove the post doc id from current users downvoted array
-              if (userInfo.downvoted.indexOf(id) != -1) {
-                currentDownVoteValue = currentDownVoteValue - 1;
-
-                //remove the post document id from the user upvoted array
-                userInfo.downvoted.splice(userInfo.downvoted.indexOf(id), 1);
-              }
-
-              callUserCanVote(userCanVote, currentUpVoteValue, currentDownVoteValue, userInfo, docRef, db,userDocId);
-
-            });
-          });
-        }
-      })
-    }
-    // Function call when downvote is clicked, Update posts and Users Database
-    function downvote(e) {
-      let userCanVote;
-      // database document id (posts)
-      let id = e.target.id;
-      let db = firebase.firestore();
-      var usersRef = db.collection("Users");
-      let userInfo;
-      let userDocId;
-      let userCanDownVote = false
-      let isUserUpVoted = false
-      let currentUpVoteValue;
-      let currentDownVoteValue;
-      var docRef = db.collection("Posts").doc(id);
-       docRef.get().then(function (doc) {
-        if (doc.exists) {
-          let currentUpVoteValue = doc.data().upvote;
-          let currentDownVoteValue = doc.data().downvote
-          // Create a query against the collection.
-          var query = usersRef.where("email", "==", emailId).get().then(function (querySnapshot) {
-            querySnapshot.forEach(function (uniqueUser) {
-              console.log(uniqueUser.id, " => ", uniqueUser.data());
-              userDocId = uniqueUser.id;
-              userInfo = uniqueUser.data();
-
-              // If user already down voted then do not anything just return the control back
-              if (userInfo.downvoted.indexOf(id) !== -1) {
-                userCanVote = false;
-                return;
-              }
-
-              // If user did not down voted then give him a chance to vote
-              if (userInfo.downvoted.indexOf(id) == -1) {
-                userCanVote = true;
-                userInfo.downvoted.push(id);
-                currentDownVoteValue = currentDownVoteValue + 1;
-              }
-
-              // If user did not up voted keep the current up vote value same 
-              if (userInfo.upvoted.indexOf(id) == -1) {
-                currentUpVoteValue = currentUpVoteValue;
-              }
-
-              // If user alaready up voted then decrease the count by 1
-              if (userInfo.upvoted.indexOf(id) != -1) {
-                isUserUpVoted = true;
-                userInfo.upvoted.splice(userInfo.upvoted.indexOf(id), 1);
-                currentUpVoteValue = currentUpVoteValue - 1;
-              }
-
-              callUserCanVote(userCanVote, currentUpVoteValue, currentDownVoteValue, userInfo, docRef, db,userDocId);
-            });
-          });
-        }
-      })
-    }
-    //Update Users and Posts Database
-    function callUserCanVote(userCanVote, currentUpVoteValue, currentDownVoteValue, userInfo, docRef, db,userDocId) {
-      if (userCanVote) {
-        docRef.update({ // saving updated values tp Posts db
-          upvote: currentUpVoteValue,
-          downvote: currentDownVoteValue
-        }).then(function (doc) {
-          // upvote_data = doc.data().upvote;
-          console.log("Document successfully written!", doc);
-          db.collection("Users").doc(userDocId).update({ // saving updated values to Users db
-            upvoted: userInfo.upvoted,
-            downvoted: userInfo.downvoted
-          }).then(function (val) {
-            console.log(val);
-            location.reload();
-          });
-        }).catch(function (error) {
-          console.error("Error writing document: ", error);
-        });
-      }
-    }
   </script>
+
+  
+
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

@@ -134,7 +134,7 @@ app.use(bodyParser.json());
  								 	var query = defaultDB.collection('Users').where('account_id', '==', acc_id);
  									query.get().then(function(querySnapshot){
   										querySnapshot.forEach(function(doc) {
-  											doc.ref.update({Category: new_acc_type});
+  											doc.ref.update({category: new_acc_type});
   										});
  									});
  									var query = defaultDB.collection('Privledges');

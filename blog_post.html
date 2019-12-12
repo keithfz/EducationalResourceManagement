@@ -52,7 +52,7 @@
                 <a class="nav-link" href="admin_page.html">Admin</a>
               </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <form class="form-inline my-2 my-lg-0" action="blog_results.html" method="GET">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-primary" type="submit">Search</button>
                 <ul class="navbar-nav ml-auto">
@@ -80,6 +80,7 @@
     </main>
 
     <script>
+    var emailId;
     var firebaseConfig = {
       apiKey: "AIzaSyAT3nO748LYDdkwXQFwHNlei_AnlQEXG98",
       authDomain: "educationalmanagement-44760.firebaseapp.com",
@@ -97,6 +98,7 @@
     //var user = firebase.auth().currentUser;
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
+          emailId = user.email;
           document.getElementById('logging').innerHTML = "Log out";
         }
         else{
@@ -127,19 +129,44 @@
         dateString = date.split(' ').slice(1, 4).join(' ');
         var displayName = `${doc.get("displayName")}`;
         var header = `${doc.get("header")}`;
+        
+        var upvote_data = `${doc.get("upvote")}`;
+        var downvote_data = `${doc.get("downvote")}`;
         var delete_post = "";
         console.log(doc.data().body);
         var showList = document.getElementById('blogs');
         var img_src = "";
                 if(doc.get("file") != undefined){
                   var image = `${doc.get("file")}`;
-                  img_src = '<img src="' + image + '">'
+                  img_src = '<img src="' + image + '" style="max-width: 400px">'
         }
         if (admin_status == '1'){ // ignore for now
                   var showList = document.getElementById('blogs');
-                  var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
-                  +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                  +'<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ `'${doc.id}'` + ')">Delete</a><hr>';
+//                  var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
+//                  +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+//                  +'<p>' + img_src + '</p><p>' + body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br>' + '<a class="nav-link" href="javascript:deletePost('+ `'${doc.id}'` + ')">Delete</a><hr>';
+
+          var html_add =
+            `
+            <h2 class="blog-post-title"><a href="blog_post.html#${id}" style="color:black"> ${header}</a></h2>
+            <p class="blog-post-meta"> ${dateString} by <a href="#"> ${displayName} </a></p>
+            ${img_src}
+            <p> ${body} </p>
+              <p1>
+                <button type="button" onclick='upvote(event)'>
+                  <img src="img/upvote.png" alt="upvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="upvote">${upvote_data}</p2>
+                <button type="button" onclick='downvote(event)'>
+                  <img src="img/downvote.jpeg" alt="downvote" height="35" width="37" id=${id}>
+                </button>
+                 <p2 id="downvote">${downvote_data}</p2>
+                        </p1>
+
+                   <a class="nav-link" href="javascript:deletePost('${doc.id}')">Delete</a>
+                      <hr>
+                    `
+
                   showList.insertAdjacentHTML( 'afterbegin', html_add );
 
                     var comment_query = firestore.collection('Posts').doc(selection).collection("Comments").orderBy('date').get().then((querySnapshot) => {
@@ -159,10 +186,30 @@
         }
         else{
                   var showList = document.getElementById('blogs');
-                  var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
-                  +'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
-                  +'<p>' + img_src + '</p><p>'+ body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br><hr>';
-                  showList.insertAdjacentHTML( 'afterbegin', html_add );
+                  //var html_add = '<h2 class="blog-post-title">' + header + '</h2>'
+                  //+'<p class="blog-post-meta">' + dateString + ' by <a href="#">' + displayName + '</a></p>'
+                  //+'<p>' + img_src + '</p><p>'+ body + '</p></div><p1><button type="button" onclick="upvote_count()"><img src="img/upvote.png" alt="upvote" height="35" width="37"></button><p2 id="upvote">0</p2><button type="button" onclick="downvote_count()"><img src="img/downvote.jpeg" alt="downvote" height="35" width="37"></button><p3 id="downvote">0</p3></p1><br><br><hr>';
+                  
+          var html_add =
+            `
+            <h2 class="blog-post-title"><a href="blog_post.html#${id}" style="color:black"> ${header}</a></h2>
+            <p class="blog-post-meta"> ${dateString} by <a href="#"> ${displayName} </a></p>
+            ${img_src}
+            <p> ${body} </p>
+              <p1>
+                <button type="button" onclick='upvote(event)'>
+                  <img src="img/upvote.png" alt="upvote" height="35" width="37" id=${id}>
+                </button>
+                <p2 id="upvote">${upvote_data}</p2>
+                <button type="button" onclick='downvote(event)'>
+                  <img src="img/downvote.jpeg" alt="downvote" height="35" width="37" id=${id}>
+                </button>
+                 <p2 id="downvote">${downvote_data}</p2>
+                        </p1>
+                      <br><br><hr>
+                    `
+
+                    showList.insertAdjacentHTML( 'afterbegin', html_add );
 
                     var comment_query = firestore.collection('Posts').doc(selection).collection("Comments").orderBy('date').get().then((querySnapshot) => {
                     querySnapshot.forEach((commentDoc) => {
@@ -189,6 +236,11 @@
         if (user != null){
           var full_name = firebase.auth().currentUser.displayName;
           var input_body = document.getElementById("comment_body").value;
+          if(input_body == ""){
+              alert("Please add text to your comment");
+              return false;
+          }
+
           var creation_date = firebase.firestore.Timestamp.now().toDate();
 
           // Save to DB
@@ -240,7 +292,7 @@
       if (result){
         firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
           console.log(idToken);
-          var res = $.post( "http://localhost:3000/admin/delete_post", 
+          var res = $.post( "http://ec2-3-92-238-146.compute-1.amazonaws.com/api/admin/delete_post", 
             {token: idToken, post_id: post_id},
             function( data ) {
               $( ".result" ).html( data );
@@ -249,8 +301,144 @@
           console.log("error sending token", error);
         });
       }
-      window.location = ("blog.html");
+      //window.location = ("blog.html");
     }    
+
+
+    function upvote(e) {
+      let userCanVote = false;
+      // database document id (posts)
+      let id = e.target.id;
+      let db = firebase.firestore();
+      var usersRef = db.collection("Users"); // Users database
+      let userInfo;
+      let userDocId;
+      let currentUpVoteValue; // current upvote value for the post
+      let currentDownVoteValue; // current downvote value for the post
+      // searching a document in Posts db
+      var docRef = db.collection("Posts").doc(id);
+      docRef.get().then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          let currentUpVoteValue = doc.data().upvote;
+          let currentDownVoteValue = doc.data().downvote
+          // Create a query against the collection.
+          var query = usersRef.where("email", "==", emailId).get().then(function (querySnapshot) {
+            querySnapshot.forEach(function (uniqueUser) {
+              // doc.data() is never undefined for query doc snapshots
+              console.log(uniqueUser.id, " => ", uniqueUser.data());
+              userDocId = uniqueUser.id;
+              userInfo = uniqueUser.data();
+              // If user already up voted the post, return the control back
+              if (userInfo.upvoted.indexOf(id) != -1) {
+                userCanVote = false;
+                return;
+              }
+              // If user hasnt  upvoted, giving him chance to vote
+              if (userInfo.upvoted.indexOf(id) == -1) {
+                userCanVote = true;
+                currentUpVoteValue = currentUpVoteValue + 1;
+                userInfo.upvoted.push(id);
+              }
+              // If user hasn't downvoted,keep the current down vote value same 
+              if (userInfo.downvoted.indexOf(id) == -1) {
+                currentDownVoteValue = currentDownVoteValue
+              }
+              // If user already downvoted, decrease the value by 1 and remove the post doc id from current users downvoted array
+              if (userInfo.downvoted.indexOf(id) != -1) {
+                currentDownVoteValue = currentDownVoteValue - 1;
+
+                //remove the post document id from the user upvoted array
+                userInfo.downvoted.splice(userInfo.downvoted.indexOf(id), 1);
+              }
+
+              callUserCanVote(userCanVote, currentUpVoteValue, currentDownVoteValue, userInfo, docRef, db,userDocId);
+
+            });
+          });
+        }
+      })
+    }
+
+
+   // Function call when downvote is clicked, Update posts and Users Database
+    function downvote(e) {
+      let userCanVote;
+      // database document id (posts)
+      let id = e.target.id;
+      let db = firebase.firestore();
+      var usersRef = db.collection("Users");
+      let userInfo;
+      let userDocId;
+      let userCanDownVote = false
+      let isUserUpVoted = false
+      let currentUpVoteValue;
+      let currentDownVoteValue;
+      var docRef = db.collection("Posts").doc(id);
+       docRef.get().then(function (doc) {
+        if (doc.exists) {
+          let currentUpVoteValue = doc.data().upvote;
+          let currentDownVoteValue = doc.data().downvote
+          // Create a query against the collection.
+          var query = usersRef.where("email", "==", emailId).get().then(function (querySnapshot) {
+            querySnapshot.forEach(function (uniqueUser) {
+              console.log(uniqueUser.id, " => ", uniqueUser.data());
+              userDocId = uniqueUser.id;
+              userInfo = uniqueUser.data();
+
+              // If user already down voted then do not anything just return the control back
+              if (userInfo.downvoted.indexOf(id) !== -1) {
+                userCanVote = false;
+                return;
+              }
+
+              // If user did not down voted then give him a chance to vote
+              if (userInfo.downvoted.indexOf(id) == -1) {
+                userCanVote = true;
+                userInfo.downvoted.push(id);
+                currentDownVoteValue = currentDownVoteValue + 1;
+              }
+
+              // If user did not up voted keep the current up vote value same 
+              if (userInfo.upvoted.indexOf(id) == -1) {
+                currentUpVoteValue = currentUpVoteValue;
+              }
+
+              // If user alaready up voted then decrease the count by 1
+              if (userInfo.upvoted.indexOf(id) != -1) {
+                isUserUpVoted = true;
+                userInfo.upvoted.splice(userInfo.upvoted.indexOf(id), 1);
+                currentUpVoteValue = currentUpVoteValue - 1;
+              }
+
+              callUserCanVote(userCanVote, currentUpVoteValue, currentDownVoteValue, userInfo, docRef, db,userDocId);
+            });
+          });
+        }
+      })
+    }
+
+
+    function callUserCanVote(userCanVote, currentUpVoteValue, currentDownVoteValue, userInfo, docRef, db,userDocId) {
+      if (userCanVote) {
+        docRef.update({ // saving updated values tp Posts db
+          upvote: currentUpVoteValue,
+          downvote: currentDownVoteValue
+        }).then(function (doc) {
+          // upvote_data = doc.data().upvote;
+          console.log("Document successfully written!", doc);
+          db.collection("Users").doc(userDocId).update({ // saving updated values to Users db
+            upvoted: userInfo.upvoted,
+            downvoted: userInfo.downvoted
+          }).then(function (val) {
+            console.log(val);
+            location.reload();
+          });
+        }).catch(function (error) {
+          console.error("Error writing document: ", error);
+        });
+      }
+    }
 
     </script>
     <script src="https://code.jquery.com/jquery-3.4.1.js"

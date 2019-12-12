@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<form cng="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -51,7 +51,7 @@
                 <a class="nav-link" href="messages.html">Messages</a>
               </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <form class="form-inline my-2 my-lg-0" action="blog_results.html" method="GET">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-primary" type="submit">Search</button>
                 <ul class="navbar-nav ml-auto">
@@ -109,7 +109,6 @@
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       var db = firebase.firestore();
-
       // Setup User login state
     firebase.auth().onAuthStateChanged(user => {
         if(user) {
@@ -127,7 +126,6 @@
     else{
       document.getElementById('logging').innerHTML = "Log in";
     }
-
     function handleLogging(){
       console.log("handle logging");
       var currentState = document.getElementById('logging').innerHTML;

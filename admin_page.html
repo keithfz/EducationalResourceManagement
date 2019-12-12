@@ -54,7 +54,7 @@
                 <a class="nav-link" href="admin_page.html">Admin</a>
               </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <form class="form-inline my-2 my-lg-0" action="blog_results.html" method="GET">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-primary" type="submit">Search</button>
                 <ul class="navbar-nav ml-auto">
@@ -83,7 +83,7 @@
             <input type="text" id="first_name" class="form-control" placeholder="First Name" required>
             <input type="text" id="last_name" class="form-control" placeholder="Last Name" required>
             <input type="text" id="email" class="form-control" placeholder="Email" required>
-            <input type="text" id="university_id" class="form-control" placeholder="University ID" required>
+            <input type="text" id="university_id" class="form-control" placeholder="University ID" maxlength=9 required>
             <input type="password" id="temp_password" class="form-control" autocomplete="on" placeholder="Temporary Password" required>
             <input type="password" id="confirm_password" class="form-control" autocomplete="on" placeholder="Confirm Password" required>
             <div class="apply-flex">
@@ -183,16 +183,29 @@
         var confirm_password = document.getElementById('confirm_password').value;
         var full_name = first_name + " " + last_name;
         var acc_type = document.getElementById('inlineFormCustomSelectPref').value;
-        if (first_name == "" || last_name == "" || email == "" || university_id == "" || temp_password == "" || acc_type == undefined || temp_password !== confirm_password){
-          return
+        if (first_name == "" || last_name == "" || email == "" || university_id == "" || temp_password == "" || acc_type == undefined){
+            alert("Please fill out every field to add new user");
+            return false;
         }
+        if(temp_password != confirm_password){
+            alert("Error: Passwords do not match.");
+            return false;
+        }
+
+        var reg_ex_check = /^\d+$/.test(university_id);
+
+        if(university_id.length != 9 || reg_ex_check==false){
+            alert("Please enter a valid university ID");
+            return false;
+        }
+
         else{
           console.log(full_name);
           var result = confirm("Are you sure you want to add user " + full_name);
           if (result){
             console.log("Adding user");
             firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
-              var res = $.post( "http://localhost:3000/admin/add_user", 
+              var res = $.post( "http://ec2-3-92-238-146.compute-1.amazonaws.com/api/admin/add_user", 
                 {token: idToken, displayName: full_name, email: email, university_id:university_id, password: temp_password, acc_type: acc_type},
                 function( data ) {
                   $( ".result" ).html( data );
@@ -208,7 +221,7 @@
         firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
           console.log(idToken);
           console.log(unique_id);
-          var res = $.post( "http://localhost:3000/admin/delete_user", 
+          var res = $.post( "http://ec2-3-92-238-146.compute-1.amazonaws.com/api/admin/delete_user", 
             {token: idToken, account_id: unique_id},
             function( data ) {
               $( ".result" ).html( data );

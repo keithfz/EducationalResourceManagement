@@ -343,16 +343,25 @@
 
         }
         else {
-          if(body.length>500){
-          body=body.substr(0,500).concat('.....');
+          var img_src = "";
+          if(doc.get("file") != undefined){
+              var image = `${doc.get("file")}`;
+              img_src = '<img src="' + image + '" style="max-width: 250px;">';
           }
+
+          if(body.length>500){
+
+              body=body.substr(0,500).concat('.....');
+          }
+
           var showList = document.getElementById('blogs');
           var html_add =
 
             `
-            <h2 class="blog-post-title"><a href="blog_post.html" + ${id} style="color:black"> ${header}</a></h2>
+            <h2 class="blog-post-title"><a href="blog_post.html#${id}" style="color:black"> ${header}</a></h2>
             <p class="blog-post-meta"> ${dateString} by <a href="#"> ${displayName} </a></p>
-            <p> ${body} </p>
+            <p> ${img_src} </p>
+             <p> ${body} </p>
               <p1>
                 <button type="button" onclick='upvote(event)'>
                   <img src="img/upvote.png" alt="upvote" height="35" width="37" id=${id}>
@@ -380,14 +389,21 @@
 
         }
         else {
+
+
           var img_src = "";
-                if(doc.get("file") != undefined){
-                  var image = `${doc.get("file")}`;
-                  img_src = '<img src="' + image + '" style="max-width: 400px">'
-        }
-          if(body.length>500){
-            body=body.substr(0,500).concat('.....');
+          if(doc.get("file") != undefined){
+              var image = `${doc.get("file")}`;
+              img_src = '<img src="' + image + '" style="max-width: 250px;">';
           }
+
+          if(body.length>500){
+
+              body=body.substr(0,500).concat('.....');
+          }
+
+
+
           var showList = document.getElementById('blogs');
           var html_add =
 
